@@ -1,0 +1,36 @@
+int age = 10;
+String name = "fengluoye";
+boolean isDebug = false;
+def message = "欢迎" + name + age;
+
+ArrayList arrayList = ["arrayOne", "arrayTwo", age, isDebug];
+
+def map = [1: "one", "2": "two", 3: "three", "hello": "hell", (age): "年纪"];
+
+task helloTest {
+    doLast {
+        println(name)
+        println(message)
+
+
+        //打印整个数组，可以出具体内容
+        println(arrayList)
+        //输出具体下标的元素
+        println(arrayList[0])
+        println(arrayList[1])
+
+        //输入子数组
+        println(arrayList[2, 3])
+
+
+        println(map)
+        //根据key 打印出值
+        println(map[1])
+        println(map.hello)
+
+        //如果使用参数作为key的话，需要使用第一种
+        println(map[age])
+        //直接返回null,因为不存在当前key对应的值
+        println(map.age)
+    }
+}

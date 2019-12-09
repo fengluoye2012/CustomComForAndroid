@@ -1,0 +1,48 @@
+//如果类、方法没有修饰符的话，默认是 public 修饰符的
+//如果类中的变量 fields 没有被修饰符修饰的话，会自动成为一个 properties，properties 是公有的，并且会自动生成该 properties 的 setter 和 getter 方法
+//在 Java 中，文件名和主类的名称必须一致，但是 Groovy 中并没有这个限制，且在一个 Groovy 文件中可以出现多个 public 的类
+//在一个 Groovy 文件中可以在类之外定义方法或语句，这种文件就是脚本了
+
+class Student {
+    def name
+    def age
+    private def work
+    private def level
+
+    def Student(def name) {
+        this.name = name
+    }
+
+    def void changeName(def name) {
+        this.name = name
+    }
+
+    def getCustomName() {
+        return name + "fenglu"
+    }
+
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name=" + name +
+                ", age=" + age +
+                ", work=" + work +
+                ", level=" + level +
+                '}';
+    }
+}
+
+task(classTest) {
+    doLast {
+        def stu = new Student("风落叶")
+        println(stu)
+        stu.changeName("掌声")
+        println(stu.toString())
+        println(stu.getName())
+
+        println(stu.getCustomName())
+
+    }
+}
+

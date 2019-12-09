@@ -1,0 +1,26 @@
+//闭包可以访问闭包之外的变量
+
+def message = "closure is good"
+
+def printMessage = {
+    println("The message is" + message)
+}
+
+//闭包
+Closure<Boolean> booleanClosure = {
+    return it == "hh"
+}
+
+//闭包可以省略参数，默认有一个it的参数
+def testClosure = {
+    println("I am a closure the param is" + it)
+}
+
+
+task(closureTest) {
+    printMessage()
+    booleanClosure("哈")
+
+    //闭包调用的三种方式
+    testClosure("小王")
+}

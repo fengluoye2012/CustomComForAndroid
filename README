@@ -1,0 +1,30 @@
+目标：
+1）熟练掌握gradle语法、生命周期
+2）和Hook 联系起来
+3）动态加载、删除组件
+
+Gradle资源：
+https://www.jianshu.com/p/2e19268bf387
+
+Gradle:
+1)一个 Task 是 Gradle 里项目构建的原子执行单元，Gradle 通过将一个个Task串联起来完成具体的构建任务，每个 Task 都属于一个 Project
+2)命令(mac中)
+./gradlew taskName 执行某一个task
+./gradlew tasks --all 获取脚本中所有的task(包括android项目自带的task)
+
+3)gradle的生命周期：
+初始化（Initialization）
+配置(Configuration)
+执行（Execution）
+
+
+
+
+相关资料
+1）Gradle--语言基础Groovy;
+Groovy是从Java衍生出来的，可以和Java语言混写；还需要学习Android DSL 和 Gradle DSL。
+Groory语法：https://www.jianshu.com/p/fe3aede00fd3
+
+2)调用自定义的.gradle文件
+2.1)在app目录下的build.gradle配置apply from: '../groovy/XXX.gradle'
+2.2)直接点击task旁边的run或者./gradlew 文件名

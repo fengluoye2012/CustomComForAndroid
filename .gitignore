@@ -1,0 +1,38 @@
+# Gradle files
+.gradle
+/build
+
+# 本地配置文件 (sdk path, etc)
+/local.properties
+
+# IntelliJ (IDE配置文件)
+*.iml
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+
+
+.DS_Store
+
+# Android Studio captures folder
+/captures
+# 在Android Studio 2.2及更高版本中生成的外部原生构建文件夹
+.externalNativeBuild
+
+# Built application 文件
+*.apk
+*.ap_
+
+# ART/Dalvik VM 文件
+*.dex
+
+# Java class 文件
+*.class
+
+# Generated 文件夹
+bin/
+gen/
+out/
