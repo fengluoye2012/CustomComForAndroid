@@ -24,3 +24,9 @@ task(closureTest) {
     //闭包调用的三种方式
     testClosure("小王")
 }
+
+task(Clutest) {
+    doFirst {
+        println("huhuhuhu")
+    }
+}

@@ -1,0 +1,65 @@
+////领域对象类型定义
+//class TestDomainObj {
+//    //必须定义一个name属性，并且这个属性值初始化以后就不要修改
+//    String name
+//
+//    String msg
+//
+//    //构造函数必须要有一个name 参数
+//    TestDomainObj(String name) {
+//        this.name = name
+//    }
+//
+//
+//    @Override
+//    public String toString() {
+//        return "TestDomainObj{" +
+//                "name='" + name + '\'' +
+//                ", msg='" + msg + '\'' +
+//                '}';
+//    }
+//}
+//
+////创建一个扩展
+//class TestExtensions {
+//    //定义一个
+//    NamedDomainObjectContainer<TestDomainObj> testDomains
+//
+//    String test
+//
+//    TestExtensions(String test) {
+//        this.test = test
+//    }
+//
+////    TestExtensions(Project project) {
+////        NamedDomainObjectContainer<TestDomainObj> domainObjects = project.container(TestDomainObj)
+////        testDomains = domainObjects
+////    }
+////
+////    //让其支持Gradle DSL 语法
+////    void testDomain(Action action) {
+////        action.execute(testDomains)
+////    }
+////
+////    void test() {
+////        //遍历命名领域对象容器，打印出所有的领域对象值
+////        testDomains.all { data ->
+////            println(data)
+////        }
+////    }
+//}
+//
+////创建一个名为test
+//TestExtensions test = getExtensions().create("Domaintest", TestExtensions,"test2012")
+//
+//extensions {
+//    testDomains {
+//        msg "hhhhhh"
+//    }
+//}
+//
+//task(MyTask) {
+//    doLast {
+//        test.test()
+//    }
+//}

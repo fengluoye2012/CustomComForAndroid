@@ -1,0 +1,36 @@
+class UserInfo {
+    String userName
+    int sex
+    String headIcon
+
+    UserInfo(String userName, int sex, String headIcon) {
+        this.userName = userName
+        this.sex = sex
+        this.headIcon = headIcon
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "userName='" + userName + '\'' +
+                ", sex=" + sex +
+                ", headIcon='" + headIcon + '\'' +
+                '}';
+    }
+}
+
+
+//创建一个userInfo 的UserInfo
+def userInfo = getExtensions().create("userInfo", UserInfo, "fengluoye", 1, "")
+getExtensions().create("tem", UserInfo, "fengluoye2012", 1, "hhhhh")
+
+task testExt {
+    doLast {
+        println(userInfo)
+        def useIn = project.getExtensions().getByName("userInfo")
+        def useIn1 = project.getExtensions().findByName("userInfo")
+        println(useIn)
+        //直接通过project 获取到自定义的Extensions
+        println(project.tem)
+    }
+}

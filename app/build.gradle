@@ -1,7 +1,26 @@
 apply plugin: 'com.android.application'
+apply plugin: 'davis'
+
 apply from: '../groovy/Base.gradle'
 apply from: '../groovy/ClassTest.gradle'
 apply from: '../groovy/ClosureTest.gradle'
+apply from: '../groovy/CustomExtension.gradle'
+apply from: '../groovy/DomainObjTest.gradle'
+
+println("app 子项目配置开始")
+
+afterEvaluate {
+    println("app 子项目afterEvaluate 回调")
+}
+
+task(appTest) {
+    println("app子项目里任务配置")
+    doLast {
+        println("执行子项目任务")
+    }
+}
+
+println("app 子项目配置结束")
 
 android {
     compileSdkVersion 29
@@ -28,5 +47,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.android.tools.build:gradle:3.4.1'
 }
 
