@@ -8,11 +8,11 @@ import org.gradle.api.Project
 /**
  * 在生成的class 文件中插入 代码
  */
-public class MyInjects {
+class MyInjects {
 
     private final static ClassPool pool = ClassPool.getDefault()
 
-    public static void inject(String path, Project project) {
+    static void inject(String path, Project project) {
         //将当前路径加入类池，不然找不到这个类
         pool.appendClassPath(path)
 
@@ -27,33 +27,37 @@ public class MyInjects {
             //遍历文件夹
             dir.eachFileRecurse { File file ->
                 String filePath = file.absolutePath
+                //确保当前文件是class 文件,并不是系统自动生成的class 文件
+                if (filePath.endsWith(".class") && !filePath.contains("R\$") && !filePath.contains("R.class") && !filePath.contains("BuildConfig.class")) {
+                    println("filePath == " + filePath)
 
-                println("filePath == " + filePath)
-                if (file.getName().equals("MainActivity.class")) {
-                    //获取MainActivity.class
-                    CtClass ctClass = pool.getCtClass("com.test.gradle.MainActivity")
-                    println("ctClass ==" + ctClass)
+                    if (file.getName().equals("MainActivity.class")) {
+                        //获取MainActivity.class
+                        CtClass ctClass = pool.getCtClass("com.test.gradle.MainActivity")
+                        println("ctClass ==" + ctClass)
+                        ctClass.getSuperclass()
 
-                    //解冻
-                    if (ctClass.isFrozen()) {
-                        ctClass.defrost()
+                        //解冻
+                        if (ctClass.isFrozen()) {
+                            ctClass.defrost()
+                        }
+
+                        //获取到OnCreate()方法
+                        CtMethod ctMethod = ctClass.getDeclaredMethod("onCreate")
+
+                        println("方法名 == " + ctMethod)
+
+                        String insetBeforeStr = """ android.widget.Toast.makeText(this,"我是被插入的Toast代码~!!",android.widget.Toast.LENGTH_SHORT).show(); """
+
+                        //在方法开头插入代码
+                        ctMethod.insertBefore(insetBeforeStr)
+                        ctClass.writeFile(path)
+                        //释放
+                        ctClass.detach()
                     }
-
-                    //获取到OnCreate()方法
-                    CtMethod ctMethod = ctClass.getDeclaredMethod("onCreate")
-
-                    println("方法名 == " + ctMethod)
-
-                    String insetBeforeStr = """ android.widget.Toast.makeText(this,"我是被插入的Toast代码~!!",android.widget.Toast.LENGTH_SHORT).show(); """
-
-                    //在方法开头插入代码
-                    ctMethod.insertBefore(insetBeforeStr)
-                    ctClass.writeFile(path)
-                    //释放
-                    ctClass.detach()
                 }
-            }
 
+            }
         }
     }
 }
