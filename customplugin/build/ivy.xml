@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="CustomGradleTest" module="customplugin" revision="unspecified" status="integration" publication="20191210194047"/>
+  <info organisation="CustomGradleTest" module="customplugin" revision="unspecified" status="integration" publication="20191211161824"/>
   <configurations>
     <conf name="annotationProcessor" visibility="private"/>
     <conf name="apiElements" visibility="private" extends="runtime"/>
@@ -28,5 +28,8 @@
   </publications>
   <dependencies>
     <dependency org="com.android.tools.build" name="gradle" rev="3.4.1" conf="compile-&gt;default"/>
+    <dependency org="com.android.tools.build" name="transform-api" rev="1.5.0" conf="compile-&gt;default"/>
+    <dependency org="javassist" name="javassist" rev="3.12.1.GA" conf="compile-&gt;default"/>
+    <dependency org="commons-io" name="commons-io" rev="2.5" conf="compile-&gt;default"/>
   </dependencies>
 </ivy-module>

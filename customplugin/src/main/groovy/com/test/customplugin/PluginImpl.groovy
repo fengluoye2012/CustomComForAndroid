@@ -21,6 +21,8 @@ class PluginImpl implements Plugin<Project> {
     @Override
     void apply(Project project) {
 
+
+
         //监听每个task的执行
         project.getGradle().addListener(new TaskExecutionListener() {
             @Override

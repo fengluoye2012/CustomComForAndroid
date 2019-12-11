@@ -2,6 +2,7 @@
 1）熟练掌握gradle语法、生命周期
 2）和Hook 联系起来
 3）动态加载、删除组件
+4）插件化、热修复：动态编译技术，在编译期间动态的在class文件中注入代码或者修改代码
 
 Gradle资源：
 https://www.jianshu.com/p/2e19268bf387
@@ -41,8 +42,7 @@ https://blog.csdn.net/wangzhongshun/article/details/88381058
 1、我们需要对编译class文件做自定义的处理。
 2、我们需要读取编译产生的class文件，做一些其他事情，但是不需要修改它。
 https://www.jianshu.com/p/031b62d02607
-
-
+https://blog.csdn.net/yulong0809/article/details/77752098
 
 
 相关资料
