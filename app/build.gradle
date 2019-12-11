@@ -20,6 +20,7 @@ task(appTest) {
     }
 }
 
+
 println("app 子项目配置结束")
 
 android {
@@ -39,7 +40,15 @@ android {
         }
     }
 
+//    testCreateJavaConfig {
+//        str = "动态生成java类的字符串"
+//    }
+
 }
+
+//hello {
+//    str = "what"
+//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

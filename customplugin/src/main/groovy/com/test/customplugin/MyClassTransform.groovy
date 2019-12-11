@@ -86,7 +86,7 @@ public class MyClassTransform extends Transform {
                 def jarName = jarInput.name
                 println("jar =" + jarInput.file.getAbsoluteFile())
 
-                String md5Name = DigestUtils.md5Hex(jarInput.file.getAbsoluteFile())
+                String md5Name = DigestUtils.md5Hex(jarInput.file.getAbsolutePath())
                 if (jarName.endsWith(".jar")) {
                     jarName = jarName.substring(0, jarName.length() - 4)
                 }

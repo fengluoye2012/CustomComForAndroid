@@ -5,6 +5,9 @@ import javassist.CtClass
 import javassist.CtMethod
 import org.gradle.api.Project
 
+/**
+ * 在生成的class 文件中插入 代码
+ */
 public class MyInjects {
 
     private final static ClassPool pool = ClassPool.getDefault()

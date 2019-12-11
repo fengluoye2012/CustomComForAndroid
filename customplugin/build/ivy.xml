@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="CustomGradleTest" module="customplugin" revision="unspecified" status="integration" publication="20191211161824"/>
+  <info organisation="CustomGradleTest" module="customplugin" revision="unspecified" status="integration" publication="20191211181116"/>
   <configurations>
     <conf name="annotationProcessor" visibility="private"/>
     <conf name="apiElements" visibility="private" extends="runtime"/>
