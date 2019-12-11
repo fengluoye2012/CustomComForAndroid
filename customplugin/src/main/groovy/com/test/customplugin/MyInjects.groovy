@@ -35,7 +35,6 @@ class MyInjects {
                         //获取MainActivity.class
                         CtClass ctClass = pool.getCtClass("com.test.gradle.MainActivity")
                         println("ctClass ==" + ctClass)
-                        ctClass.getSuperclass()
 
                         //解冻
                         if (ctClass.isFrozen()) {
