@@ -40,15 +40,8 @@ android {
         }
     }
 
-//    testCreateJavaConfig {
-//        str = "动态生成java类的字符串"
-//    }
-
 }
 
-//hello {
-//    str = "what"
-//}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

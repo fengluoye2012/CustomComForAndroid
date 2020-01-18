@@ -9,6 +9,7 @@ https://www.jianshu.com/p/2e19268bf387
 https://www.jianshu.com/p/4fbf352ffc56
 Gradle用户手册：https://docs.gradle.org/current/userguide/userguide.html
 组件化自动注册管理：https://www.jianshu.com/p/59368ce8b670
+Gradle用户手册中文版：http://blog.didispace.com/books/GradleUserGuide/
 
 Gradle:
 1)
@@ -25,6 +26,8 @@ doLast：task执行时最后执行的操作
     void afterEvaluate(Closure closure)
 
 beforeEvaluate 必须在父模块的 build.gradle 对子模块进行配置才能生效，因为在当前模块的 build.gradle 中配置，它自己本身都没配置好，所以不会监听到。
+
+6、Gradle 属性：局部变量：def; 扩展属性使用：ext 扩展块,可以添加多个属性
 
 
 
@@ -55,3 +58,5 @@ Groory语法：https://www.jianshu.com/p/fe3aede00fd3
 2)调用自定义的.gradle文件
 2.1)在app目录下的build.gradle配置apply from: '../groovy/XXX.gradle'
 2.2)直接点击task旁边的run或者./gradlew 文件名
+
+
