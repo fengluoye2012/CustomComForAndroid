@@ -5,7 +5,7 @@ apply from: '../groovy/Base.gradle'
 apply from: '../groovy/ClassTest.gradle'
 apply from: '../groovy/ClosureTest.gradle'
 apply from: '../groovy/CustomExtension.gradle'
-apply from: '../groovy/DomainObjTest.gradle'
+//apply from: '../groovy/DomainObjTest.gradle'
 
 println("app 子项目配置开始")
 
