@@ -1,27 +1,27 @@
 apply plugin: 'com.android.application'
 apply plugin: 'davis'
 
-apply from: '../groovy/Base.gradle'
-apply from: '../groovy/ClassTest.gradle'
-apply from: '../groovy/ClosureTest.gradle'
-apply from: '../groovy/CustomExtension.gradle'
+//apply from: '../groovy/Base.gradle'
+//apply from: '../groovy/ClassTest.gradle'
+//apply from: '../groovy/ClosureTest.gradle'
+//apply from: '../groovy/CustomExtension.gradle'
 //apply from: '../groovy/DomainObjTest.gradle'
 
-println("app 子项目配置开始")
+//println("app 子项目配置开始")
 
-afterEvaluate {
-    println("app 子项目afterEvaluate 回调")
-}
+//afterEvaluate {
+//    println("app 子项目afterEvaluate 回调")
+//}
 
-task(appTest) {
-    println("app子项目里任务配置")
-    doLast {
-        println("执行子项目任务")
-    }
-}
+//task(appTest) {
+//    println("app子项目里任务配置")
+//    doLast {
+//        println("执行子项目任务")
+//    }
+//}
 
 
-println("app 子项目配置结束")
+//println("app 子项目配置结束")
 
 android {
     compileSdkVersion 29

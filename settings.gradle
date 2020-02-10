@@ -19,25 +19,25 @@ gradle.afterProject { proj ->
     println("setting 执行 " + proj.name + " afterProject")
 }
 
-gradle.buildStarted {
-    println("构建开始")
-}
-
-gradle.buildFinished {
-    println("构建结束")
-}
-
-def taskGraph = gradle.getTaskGraph()
-taskGraph.whenReady {
-    println("task  whenReady")
-}
-
-taskGraph.beforeTask { Task task ->
-    println("任务名称：" + task.name + ", beforeTask")
-}
-
-taskGraph.afterTask { Task task ->
-    println("任务名称：" + task.name + ",afterTask")
-}
+//gradle.buildStarted {
+//    println("构建开始")
+//}
+//
+//gradle.buildFinished {
+//    println("构建结束")
+//}
+//
+//def taskGraph = gradle.getTaskGraph()
+//taskGraph.whenReady {
+//    println("task  whenReady")
+//}
+//
+//taskGraph.beforeTask { Task task ->
+//    println("任务名称：" + task.name + ", beforeTask")
+//}
+//
+//taskGraph.afterTask { Task task ->
+//    println("任务名称：" + task.name + ",afterTask")
+//}
 
 include ':app', ':customplugin'

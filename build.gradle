@@ -7,7 +7,6 @@ buildscript {
             url uri('DavisPlugin')
         }
 
-
         google()
         jcenter()
     }
@@ -36,21 +35,21 @@ task clean(type: Delete) {
 }
 
 
-//子项目模块进行配置
-subprojects { sub ->
-    sub.beforeEvaluate {
-        proj ->
-            println("子项目beforeEvaluate回调....")
-    }
-}
-
-println("根项目配置开始")
-
-task(rootTest) {
-    println("根项目里任务配置")
-    doLast {
-        println("执行跟项目任务")
-    }
-}
-println("根项目配置结束")
+////子项目模块进行配置
+//subprojects { sub ->
+//    sub.beforeEvaluate {
+//        proj ->
+//            println("子项目beforeEvaluate回调....")
+//    }
+//}
+//
+//println("根项目配置开始")
+//
+//task(rootTest) {
+//    println("根项目里任务配置")
+//    doLast {
+//        println("执行跟项目任务")
+//    }
+//}
+//println("根项目配置结束")
 
