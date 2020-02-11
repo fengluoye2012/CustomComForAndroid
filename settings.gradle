@@ -1,23 +1,23 @@
-gradle.settingsEvaluated {
-    println("settings 执行settingsEvaluated")
-}
-
-gradle.projectsLoaded {
-    println("settings 执行projectsLoaded")
-}
-
-gradle.projectsEvaluated {
-    println("settings 执行projectsEvaluated")
-}
-
-gradle.beforeProject { proj ->
-    println("setting 执行" + proj.name + "beforeProject")
-}
-
-
-gradle.afterProject { proj ->
-    println("setting 执行 " + proj.name + " afterProject")
-}
+//gradle.settingsEvaluated {
+//    println("settings 执行settingsEvaluated")
+//}
+//
+//gradle.projectsLoaded {
+//    println("settings 执行projectsLoaded")
+//}
+//
+//gradle.projectsEvaluated {
+//    println("settings 执行projectsEvaluated")
+//}
+//
+//gradle.beforeProject { proj ->
+//    println("setting 执行" + proj.name + "beforeProject")
+//}
+//
+//
+//gradle.afterProject { proj ->
+//    println("setting 执行 " + proj.name + " afterProject")
+//}
 
 //gradle.buildStarted {
 //    println("构建开始")
@@ -40,4 +40,4 @@ gradle.afterProject { proj ->
 //    println("任务名称：" + task.name + ",afterTask")
 //}
 
-include ':app', ':customplugin'
+include ':app', ':customplugin', ':lifecycle_annotation', ':lifecycle_api', ':lifecycle_apt'

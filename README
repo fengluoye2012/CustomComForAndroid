@@ -60,6 +60,11 @@ Groory语法：https://www.jianshu.com/p/fe3aede00fd3
 2.2)直接点击task旁边的run或者./gradlew 文件名
 
 
+组件化的问题：
+1）如何自动化注册组件：
+解决当组件有增、删时需要，手动改变，不易维护，同时先后注册顺序需要不断变化；
+
+
 组件化的核心思想：
 
 组件化--组件自动注册方案：
@@ -84,5 +89,15 @@ todo 反射的方式在合适加载、卸载module? 可以考虑在调用组件�
 3、组件生命周期管理：https://www.jianshu.com/p/65433846d38a
 组件生命周期如何实现自动注册：https://www.jianshu.com/p/59368ce8b670
 自定义gradle 插件： https://www.jianshu.com/p/3ec8e9574aaf
+
+
+# app 编译流程
+
+# 打包流程
+
+
+#注解 和 apt 技术
+
+link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
 
 
