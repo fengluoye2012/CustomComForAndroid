@@ -95,8 +95,8 @@ todo 反射的方式在合适加载、卸载module? 可以考虑在调用组件�
 
 # 打包流程
 
-
 #注解 和 apt 技术
+Android & Java 注解和自定义注解处理器:https://www.jianshu.com/p/aeb93a3d33d1?from=timeline
 
 link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
 

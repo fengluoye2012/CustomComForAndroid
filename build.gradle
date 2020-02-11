@@ -25,6 +25,7 @@ buildscript {
                     'espresso': 'androidx.test.espresso:espresso-core:3.2.0'
             ],
             'gradlePlugin'    : 'com.android.tools.build:gradle:${versions.gradle}',
+            'util'            : 'com.blankj:utilcodex:1.26.0',
     ]
 
 

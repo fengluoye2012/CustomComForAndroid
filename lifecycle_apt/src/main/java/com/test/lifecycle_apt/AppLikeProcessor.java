@@ -1,5 +1,6 @@
 package com.test.lifecycle_apt;
 
+import com.google.auto.service.AutoService;
 import com.test.lifecycle_annotation.AppLifeCycle;
 
 import java.io.Writer;
@@ -23,10 +24,13 @@ import javax.tools.JavaFileObject;
  * 实现注解处理器
  * <p>
  * 核心的注解处理类，在这里我们可以扫描源代码里所有的注解，找到我们需要的注解，然后作出相应处理
+ * <p>
+ * AutoService本身就是一个静态注解，在build/META-INF文件夹下生成了一个service指定文件
  */
+@AutoService(Process.class)
 public class AppLikeProcessor extends AbstractProcessor {
 
-    private static final String INTERFACE_NAME = "";
+    private static final String INTERFACE_NAME = "com.test.lifecycle_api.IAppLike";
     private Elements elementUtils;
     private Map<String, AppLikeProxyClassCreator> map = new HashMap<>();
 
@@ -60,6 +64,8 @@ public class AppLikeProcessor extends AbstractProcessor {
     //所有逻辑都在这里完成
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
+
+        System.out.println("process--AppLikeProcessor");
 
         //这里返回所有使用了AppLifeCycle 注解的元素
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(AppLifeCycle.class);
