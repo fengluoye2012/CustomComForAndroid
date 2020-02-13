@@ -30,6 +30,8 @@ import javax.tools.JavaFileObject;
 @AutoService(Process.class)
 public class AppLikeProcessor extends AbstractProcessor {
 
+    private String TAG = AppLikeProcessor.class.getSimpleName();
+
     private static final String INTERFACE_NAME = "com.test.lifecycle_api.IAppLike";
     private Elements elementUtils;
     private Map<String, AppLikeProxyClassCreator> map = new HashMap<>();

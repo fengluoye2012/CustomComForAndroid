@@ -44,6 +44,8 @@ beforeEvaluate 必须在父模块的 build.gradle 对子模块进行配置才能
 https://blog.csdn.net/wangzhongshun/article/details/88381058
 
 5）Transform使用场景：
+简单来说就是能够让开发者在项目构建阶段即由class到dex转换期间修改class文件，Transform阶段会扫描所有的class文件和资源文件
+
 1、我们需要对编译class文件做自定义的处理。
 2、我们需要读取编译产生的class文件，做一些其他事情，但是不需要修改它。
 https://www.jianshu.com/p/031b62d02607
@@ -90,14 +92,27 @@ todo 反射的方式在合适加载、卸载module? 可以考虑在调用组件�
 组件生命周期如何实现自动注册：https://www.jianshu.com/p/59368ce8b670
 自定义gradle 插件： https://www.jianshu.com/p/3ec8e9574aaf
 
+demo:
+Android组件化开发实践（九）：自定义Gradle插件:
+https://www.jianshu.com/p/3ec8e9574aaf
+Android组件化开发实践（八）：组件生命周期如何实现自动注册管理
+https://www.jianshu.com/p/59368ce8b670
+
 
 # app 编译流程
 
 # 打包流程
 
+# AMS
+- AMS是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。
+
 #注解 和 apt 技术
 Android & Java 注解和自定义注解处理器:https://www.jianshu.com/p/aeb93a3d33d1?from=timeline
 
 link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
+
+
+#自定义View-自定义不规则View
+
 
 

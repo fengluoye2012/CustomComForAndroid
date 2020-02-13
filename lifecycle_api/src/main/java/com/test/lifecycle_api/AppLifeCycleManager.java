@@ -1,7 +1,9 @@
 package com.test.lifecycle_api;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +24,9 @@ public class AppLifeCycleManager {
      * 初始化，需要在Application.onCreate()里调用
      */
     public static void init(Context context) {
+        //通过插件加载IAppLike类
+        loadAppLike();
+        
         //根据优先级排序
         Collections.sort(appLikeList, new AppLikeComparator());
 
@@ -48,5 +53,48 @@ public class AppLifeCycleManager {
             return p2 - p1;
         }
     }
+
+    /**
+     * 通过插件加载{@link IAppLike}类
+     */
+    private static void loadAppLike() {
+
+    }
+
+    /**
+     * 通过反射去加载 {@link IAppLike}的实例
+     */
+    private static void registerAppLike(String className) {
+        if (TextUtils.isEmpty(className)) {
+            return;
+        }
+
+        try {
+            Object obj = Class.forName(className).getConstructor().newInstance();
+            if (obj instanceof IAppLike) {
+                appLikeList.add((IAppLike) obj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

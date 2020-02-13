@@ -16,7 +16,7 @@ buildscript {
     ]
 
     ext.deps = [
-            'customplugin'    : 'com.test.customplugin:davis:1.1',
+            'customplugin'    : 'com.test.customplugin:davis:1.2',
             'appcompat'       : 'androidx.appcompat:appcompat:1.1.0',
             'constraintlayout': 'androidx.constraintlayout:constraintlayout:1.1.3',
             'junit'           : 'junit:junit:4.12',

@@ -1,3 +1,4 @@
+apply plugin: 'java-library'
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
@@ -15,20 +16,17 @@ dependencies {
     implementation 'javassist:javassist:3.12.1.GA'
     //开源框架 io操作
     implementation 'commons-io:commons-io:2.5'
-
-
 }
 
-repositories {
-    mavenCentral()
-}
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
 
 uploadArchives {
     repositories {
         mavenDeployer {
             pom.groupId = "com.test.customplugin"
             pom.artifactId = 'davis'
-            pom.version = 1.1
+            pom.version = 1.2
 
             //maven本地仓库的目录
             repository(url: uri('../DavisPlugin'))
