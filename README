@@ -98,6 +98,8 @@ https://www.jianshu.com/p/3ec8e9574aaf
 Android组件化开发实践（八）：组件生命周期如何实现自动注册管理
 https://www.jianshu.com/p/59368ce8b670
 
+- 如何调试 todo
+
 
 # app 编译流程
 
@@ -107,9 +109,14 @@ https://www.jianshu.com/p/59368ce8b670
 - AMS是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。
 
 #注解 和 apt 技术
-Android & Java 注解和自定义注解处理器:https://www.jianshu.com/p/aeb93a3d33d1?from=timeline
+- Android & Java 注解和自定义注解处理器:https://www.jianshu.com/p/aeb93a3d33d1?from=timeline
 
-link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
+- APT(Annotation Processing Tool)即注解处理器，是一种处理注解的工具，确切的说它是javac的一个工具，
+  它用来在编译时扫描和处理注解。注解处理器以Java代码(或者编译过的字节码)作为输入，生成.java文件作为输出。
+  简单来说就是在编译期，通过注解生成.java文件。
+  https://www.jianshu.com/p/7af58e8e3e18
+
+- link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
 
 
 #自定义View-自定义不规则View

@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -27,7 +28,7 @@ import javax.tools.JavaFileObject;
  * <p>
  * AutoService本身就是一个静态注解，在build/META-INF文件夹下生成了一个service指定文件
  */
-@AutoService(Process.class)
+@AutoService(Processor.class)
 public class AppLikeProcessor extends AbstractProcessor {
 
     private String TAG = AppLikeProcessor.class.getSimpleName();

@@ -9,7 +9,7 @@ public class LifeCyclePlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        println("---- LifeCycle plugin entrance ----");
+        println("---- LifeCycle plugin entrance ----")
 
         def android = project.getExtensions().getByType(AppExtension)
         //在插件中注册该Transform

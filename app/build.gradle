@@ -49,13 +49,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api deps.appcompat
     api deps.constraintlayout
-    api deps.junit
-    api deps.test.runner
-    api deps.test.espresso
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.test.espresso
     api deps.util
 
     implementation project(":lifecycle_annotation")
     implementation project(":lifecycle_api")
-    implementation project(":lifecycle_apt")
+    //引用插件
+    annotationProcessor project(":lifecycle_apt")
 }
 
