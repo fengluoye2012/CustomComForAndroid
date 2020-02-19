@@ -118,6 +118,8 @@ https://www.jianshu.com/p/59368ce8b670
 
 - link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
 
+- 注解处理器调试： https://www.jianshu.com/p/e2fb317bd4de
+
 
 #自定义View-自定义不规则View
 

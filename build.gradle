@@ -42,6 +42,8 @@ buildscript {
         classpath deps.gradlePlugin
         //使用自定义插件
         classpath deps.customplugin
+
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 

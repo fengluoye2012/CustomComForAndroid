@@ -19,6 +19,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 
 /**
@@ -31,6 +32,8 @@ import javax.tools.JavaFileObject;
 @AutoService(Processor.class)
 public class AppLikeProcessor extends AbstractProcessor {
 
+    private ProcessingEnvironment processingEnvironment;
+
     private String TAG = AppLikeProcessor.class.getSimpleName();
 
     private static final String INTERFACE_NAME = "com.test.lifecycle_api.IAppLike";
@@ -41,6 +44,10 @@ public class AppLikeProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         elementUtils = processingEnvironment.getElementUtils();
+
+        System.out.println("--AppLikeProcessor----init()------");
+        processingEnvironment.getMessager().printMessage(Diagnostic.Kind.NOTE, "--AppLikeProcessor----init()------");
+
     }
 
 
@@ -63,12 +70,13 @@ public class AppLikeProcessor extends AbstractProcessor {
         return SourceVersion.RELEASE_7;
     }
 
-
     //所有逻辑都在这里完成
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
-        System.out.println("process--AppLikeProcessor");
+        System.out.println("----AppLikeProcessor -----process--");
+        processingEnvironment.getMessager().printMessage(Diagnostic.Kind.NOTE, "----AppLikeProcessor -----process--");
+
 
         //这里返回所有使用了AppLifeCycle 注解的元素
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(AppLifeCycle.class);
@@ -109,31 +117,32 @@ public class AppLikeProcessor extends AbstractProcessor {
                 AppLikeProxyClassCreator creator = new AppLikeProxyClassCreator(elementUtils, typeElement);
                 map.put(fullClassName, creator);
             }
+        }
 
-            System.out.println("start to generate proxy class");
-            //开始生成代理类
-            Set<Map.Entry<String, AppLikeProxyClassCreator>> entries = map.entrySet();
-            for (Map.Entry<String, AppLikeProxyClassCreator> entry : entries) {
-                String className = entry.getKey();
-                AppLikeProxyClassCreator creator = entry.getValue();
+        System.out.println("start to generate proxy class");
+        //开始生成代理类
+        Set<Map.Entry<String, AppLikeProxyClassCreator>> entries = map.entrySet();
+        for (Map.Entry<String, AppLikeProxyClassCreator> entry : entries) {
+            String className = entry.getKey();
+            AppLikeProxyClassCreator creator = entry.getValue();
 
-                System.out.println("generate proxy class for" + className);
+            System.out.println("generate proxy class for" + className);
 
-                /*
-                 *生成代理类，并写入到文件中，生成逻辑都在{@link AppLikeProxyClassCreator} 里实现
-                 */
-                try {
-                    JavaFileObject jfo = processingEnv.getFiler().createSourceFile(creator.getProxyClassFullName());
-                    Writer writer = jfo.openWriter();
-                    writer.write(creator.generateJavaCode());
-                    writer.flush();
-                    writer.close();
+            /*
+             *生成代理类，并写入到文件中，生成逻辑都在{@link AppLikeProxyClassCreator} 里实现
+             */
+            try {
+                JavaFileObject jfo = processingEnv.getFiler().createSourceFile(creator.getProxyClassFullName());
+                Writer writer = jfo.openWriter();
+                writer.write(creator.generateJavaCode());
+                writer.flush();
+                writer.close();
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+
         return true;
     }
 }
