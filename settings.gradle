@@ -40,4 +40,4 @@
 //    println("任务名称：" + task.name + ",afterTask")
 //}
 
-include ':app', ':customplugin', ':lifecycle_annotation', ':lifecycle_api', ':lifecycle_apt', ':test'
+include ':app', ':customplugin', ':lifecycle_annotation', ':lifecycle_api', ':lifecycle_apt'

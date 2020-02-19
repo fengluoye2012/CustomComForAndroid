@@ -121,6 +121,13 @@ https://www.jianshu.com/p/59368ce8b670
 - 注解处理器调试： https://www.jianshu.com/p/e2fb317bd4de
 
 
+- 解决顺序：
+ 1) 注解、自定义注解处理器、生成对应的类
+ 2) 自定义插件
+ 3）读取指定文件夹下的文件，然后反射初始化；
+
+
+
 #自定义View-自定义不规则View
 
 

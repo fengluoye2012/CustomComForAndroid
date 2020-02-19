@@ -29,9 +29,4 @@ dependencies {
     api deps.test.runner
     api deps.test.espresso
     api deps.util
-
-    implementation project(":lifecycle_annotation")
-    implementation project(":lifecycle_api")
-    implementation project(":lifecycle_apt")
-
 }

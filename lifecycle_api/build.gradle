@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
 
@@ -34,3 +34,6 @@ dependencies {
     implementation project(':lifecycle_annotation')
 
 }
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7

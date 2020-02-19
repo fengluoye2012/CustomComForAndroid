@@ -4,8 +4,8 @@ import com.google.auto.service.AutoService;
 import com.test.lifecycle_annotation.AppLifeCycle;
 
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,9 +58,7 @@ public class AppLikeProcessor extends AbstractProcessor {
      */
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        Set<String> set = new LinkedHashSet<>();
-        set.add(AppLifeCycle.class.getCanonicalName());
-        return set;
+        return Collections.singleton(AppLifeCycle.class.getCanonicalName());
     }
 
 
@@ -129,6 +127,8 @@ public class AppLikeProcessor extends AbstractProcessor {
             System.out.println("generate proxy class for" + className);
 
             /*
+             * 由于这个文件是在build 过程中创建的，所以只有build成功之后才可以查看到它，对应的在一下目录
+             * app/build/generated/source/apt/debug/<package>/XXX.java
              *生成代理类，并写入到文件中，生成逻辑都在{@link AppLikeProxyClassCreator} 里实现
              */
             try {
