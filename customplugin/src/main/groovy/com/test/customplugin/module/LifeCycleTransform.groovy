@@ -107,7 +107,7 @@ public class LifeCycleTransform extends Transform {
                 FileUtils.copyFile(jarInput.file, dest)
             }
         }
-        println("")
+
         appLikeProxyClassList.forEach({ fileName ->
             println("file name =" + fileName)
         })

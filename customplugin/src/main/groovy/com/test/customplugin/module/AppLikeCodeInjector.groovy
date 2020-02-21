@@ -17,6 +17,11 @@ public class AppLikeCodeInjector {
     //扫描出来的所有IAppLike类
     List<String> proxyAppLikeClassList
 
+    /**
+     * 注入的目标方法
+     */
+    private String TARGET_METHOD_NAME = "loadAppLike"
+
     public AppLikeCodeInjector(List<String> list) {
         this.proxyAppLikeClassList = list
     }
@@ -84,7 +89,8 @@ public class AppLikeCodeInjector {
             println("visit method:" + name)
             def mv = super.visitMethod(access, name, desc, signature, exception)
             //找到AppLifeCycleManager里的loadAppLike()方法，我们在这个方法里插入字节码
-            if ("loadAppLife" == name) {
+            if (TARGET_METHOD_NAME == name) {
+                println("------目标方法==  ${TARGET_METHOD_NAME} ------- ")
                 mv = new LoadAppLikeMethodAdapter(mv, access, name, desc)
             }
             return mv
@@ -108,7 +114,7 @@ public class AppLikeCodeInjector {
                 def fullName = CusScanUtil.PROXY_CLASS_PACKAGE_NAME.replace("/", ".") + "." + proxyClassName.substring(0, proxyClassName.length() - 6)
                 println("full className = ${fullName}")
                 mv.visitLdcInsn(fullName)
-                mv.visitMethodInsn(INVOKEDYNAMICm, "com/test/lifecycle_api/AppLifeCycleManager", "registerAppLike", "(Ljava/lang/String;)V", false)
+                mv.visitMethodInsn(INVOKEDYNAMIC, "com/test/lifecycle_api/AppLifeCycleManager", "registerAppLike", "(Ljava/lang/String;)V", false)
             })
         }
 
