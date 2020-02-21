@@ -60,9 +60,7 @@ dependencies {
 
     implementation project(":lifecycle_annotation")
     implementation project(":lifecycle_api")
-    //引用插件
-    implementation project(":lifecycle_apt")
-    //配置注解处理器
+    //引用插件 配置注解处理器
     annotationProcessor project(":lifecycle_apt")
 }
 

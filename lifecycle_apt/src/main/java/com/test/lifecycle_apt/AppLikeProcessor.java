@@ -41,7 +41,11 @@ public class AppLikeProcessor extends AbstractProcessor {
     private Elements elementUtils;
     private Map<String, AppLikeProxyClassCreator> map = new HashMap<>();
 
-    //用于打印日志
+    /**
+     * 用于打印日志
+     * <p>
+     * 也可以使用 System.out.println(）打印日志，在Build下看到对应的日志
+     */
     private Messager messager;
 
     //用于文件处理
@@ -61,7 +65,7 @@ public class AppLikeProcessor extends AbstractProcessor {
         filer = processingEnvironment.getFiler();
 
         System.out.println("--AppLikeProcessor----init()------");
-        messager.printMessage(Diagnostic.Kind.ERROR, "--AppLikeProcessor----init()------");
+        messager.printMessage(Diagnostic.Kind.NOTE, "--AppLikeProcessor----init()------");
     }
 
 
@@ -102,14 +106,12 @@ public class AppLikeProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
         System.out.println("----AppLikeProcessor -----process--");
-        messager.printMessage(Diagnostic.Kind.ERROR, "----AppLikeProcessor -----process--");
+        messager.printMessage(Diagnostic.Kind.NOTE, "----AppLikeProcessor -----process--");
 
 
         //这里返回所有使用了AppLifeCycle 注解的元素
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(AppLifeCycle.class);
         map.clear();
-
-
 
         //遍历所有使用了该注解的元素
         for (Element element : elements) {
@@ -142,6 +144,8 @@ public class AppLikeProcessor extends AbstractProcessor {
             String fullClassName = typeElement.getQualifiedName().toString();
             if (!map.containsKey(fullClassName)) {
                 System.out.println("process class name:" + fullClassName);
+                messager.printMessage(Diagnostic.Kind.NOTE, "process class name:" + fullClassName);
+
                 //创建代理类生成器
                 AppLikeProxyClassCreator creator = new AppLikeProxyClassCreator(elementUtils, typeElement);
                 map.put(fullClassName, creator);
@@ -149,6 +153,8 @@ public class AppLikeProcessor extends AbstractProcessor {
         }
 
         System.out.println("start to generate proxy class");
+        messager.printMessage(Diagnostic.Kind.NOTE, "start to generate proxy class");
+
         //开始生成代理类
         Set<Map.Entry<String, AppLikeProxyClassCreator>> entries = map.entrySet();
         for (Map.Entry<String, AppLikeProxyClassCreator> entry : entries) {
@@ -156,6 +162,7 @@ public class AppLikeProcessor extends AbstractProcessor {
             AppLikeProxyClassCreator creator = entry.getValue();
 
             System.out.println("generate proxy class for" + className);
+            messager.printMessage(Diagnostic.Kind.NOTE, "generate proxy class for" + className);
 
             /*
              * 由于这个文件是在build 过程中创建的，所以只有build成功之后才可以查看到它，对应的在一下目录

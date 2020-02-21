@@ -43,7 +43,7 @@ public class AppLikeProxyClassCreator {
 
         //设置import部分
         sb.append("import android.content.Context;\n");
-        sb.append("import com.hm.lifecycle.api.IAppLike;\n");
+        sb.append("import com.test.lifecycle_api.IAppLike;\n");
         sb.append("import ").append(typeElement.getQualifiedName()).append(";\n\n");
 
         sb.append("public class ").append(mProxyClassSimpleName)
