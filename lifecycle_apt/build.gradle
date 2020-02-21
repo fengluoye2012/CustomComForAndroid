@@ -4,10 +4,12 @@ apply plugin: 'com.github.dcendents.android-maven'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    //这是谷歌提供的一个自动服务注册框架，需要用到
-    implementation 'com.google.auto.service:auto-service:1.0-rc3'
+    //auto service 这是谷歌提供的一个自动服务注册框架，需要用到
+    implementation 'com.google.auto.service:auto-service:1.0-rc4'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc4'
+
     implementation project(':lifecycle_annotation')
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = "8"
+targetCompatibility = "8"

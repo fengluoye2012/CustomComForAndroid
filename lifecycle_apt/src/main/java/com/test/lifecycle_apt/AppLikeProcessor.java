@@ -3,7 +3,8 @@ package com.test.lifecycle_apt;
 import com.google.auto.service.AutoService;
 import com.test.lifecycle_annotation.AppLifeCycle;
 
-import java.io.Writer;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
@@ -32,27 +35,40 @@ import javax.tools.JavaFileObject;
 @AutoService(Processor.class)
 public class AppLikeProcessor extends AbstractProcessor {
 
-    private ProcessingEnvironment processingEnvironment;
-
     private String TAG = AppLikeProcessor.class.getSimpleName();
 
     private static final String INTERFACE_NAME = "com.test.lifecycle_api.IAppLike";
     private Elements elementUtils;
     private Map<String, AppLikeProxyClassCreator> map = new HashMap<>();
 
+    //用于打印日志
+    private Messager messager;
+
+    //用于文件处理
+    private Filer filer;
+
+    /**
+     * 初始化方法会被注解处理工具调用，并传入参数processingEnvironment，该参数提供了很多有用的工具类，
+     * 如：Elements、Types、Filter等等
+     *
+     * @param processingEnvironment
+     */
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         elementUtils = processingEnvironment.getElementUtils();
+        messager = processingEnvironment.getMessager();
+        filer = processingEnvironment.getFiler();
 
         System.out.println("--AppLikeProcessor----init()------");
-        processingEnvironment.getMessager().printMessage(Diagnostic.Kind.NOTE, "--AppLikeProcessor----init()------");
-
+        messager.printMessage(Diagnostic.Kind.ERROR, "--AppLikeProcessor----init()------");
     }
 
 
     /**
-     * 返回该注解处理器要解析的注解
+     * 该处理器支持的所有注解类集合，在这里可以添加自定义注解
+     * <p>
+     * 可以用注解 @SupportedAnnotationTypes("com.test.lifecycle_annotation.AppLifeCycle")
      *
      * @return
      */
@@ -62,23 +78,38 @@ public class AppLikeProcessor extends AbstractProcessor {
     }
 
 
-    //支持的源代码 Java 版本号
+    /**
+     * 该处理器支持的JDK版本，例如： SourceVersion.RELEASE_7
+     * 一般返回 SourceVersion.latestSupported()
+     * 也可以使用 @SupportedSourceVersion(SourceVersion.RELEASE_7)
+     *
+     * @return
+     */
     @Override
     public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.RELEASE_7;
+        return SourceVersion.RELEASE_8;
     }
 
-    //所有逻辑都在这里完成
+
+    /**
+     * 相当于main函数，在这个方法中处理注解与生成新的文件，所有逻辑都在这里完成
+     *
+     * @param set              该方法需要处理的注解类型
+     * @param roundEnvironment 关于一轮遍历中提供给我们调用的信息.
+     * @return 改轮注解是否处理完成 true 下轮或者其他的注解处理器将不会接收到次类型的注解.用处不大
+     */
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
         System.out.println("----AppLikeProcessor -----process--");
-        processingEnvironment.getMessager().printMessage(Diagnostic.Kind.NOTE, "----AppLikeProcessor -----process--");
+        messager.printMessage(Diagnostic.Kind.ERROR, "----AppLikeProcessor -----process--");
 
 
         //这里返回所有使用了AppLifeCycle 注解的元素
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(AppLifeCycle.class);
         map.clear();
+
+
 
         //遍历所有使用了该注解的元素
         for (Element element : elements) {
@@ -131,15 +162,25 @@ public class AppLikeProcessor extends AbstractProcessor {
              * app/build/generated/source/apt/debug/<package>/XXX.java
              *生成代理类，并写入到文件中，生成逻辑都在{@link AppLikeProxyClassCreator} 里实现
              */
+            BufferedWriter writer = null;
             try {
-                JavaFileObject jfo = processingEnv.getFiler().createSourceFile(creator.getProxyClassFullName());
-                Writer writer = jfo.openWriter();
+                JavaFileObject jfo = filer.createSourceFile(creator.getProxyClassFullName());
+                //Writer writer = jfo.openWriter();
+                writer = new BufferedWriter(jfo.openWriter());
                 writer.write(creator.generateJavaCode());
-                writer.flush();
-                writer.close();
+//                writer.flush();
+//                writer.close();
 
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (writer != null) {
+                    try {
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
