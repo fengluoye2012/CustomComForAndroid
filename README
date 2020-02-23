@@ -4,6 +4,18 @@
 3）动态加载、删除组件
 4）插件化、热修复：动态编译技术，在编译期间动态的在class文件中注入代码或者修改代码
 
+
+技术点：
+1）自定义注解和自定义注解处理器，生成class文件。
+2）groovy 语法、自定义gradle插件.
+3）自定义Transform,通过AMS 在编译期间，动态插入代码.
+
+解决步骤：
+ 1) 注解、自定义注解处理器、生成对应的类
+ 2) 自定义插件
+ 3）读取指定文件夹下的文件，然后反射初始化；
+
+
 Gradle资源：
 https://www.jianshu.com/p/2e19268bf387
 https://www.jianshu.com/p/4fbf352ffc56
@@ -98,42 +110,36 @@ https://www.jianshu.com/p/3ec8e9574aaf
 Android组件化开发实践（八）：组件生命周期如何实现自动注册管理
 https://www.jianshu.com/p/59368ce8b670
 
-- 如何调试 todo
+#注解 和 apt 技术
 
+    - 注解：https://blog.csdn.net/hai_qing_xu_kong/article/details/51779695?utm_source=distribute.pc_relevant.none-task
+      运行时注解（动态注解）：一般配合反射机制使用，相对编译时注解性能比较低，但是灵活性强。eg:Retrofit使用运行时注解。
+      编译时注解（静态注解）：编译时注解能够自动处理Java源文件，并可以根据需要生成新的文件。eg:ButterKnife。
+      Android & Java 注解和自定义注解处理器：https://www.jianshu.com/p/aeb93a3d33d1?from=timeline
+      自定义注解处理器：https://blog.csdn.net/u014780554/article/details/79918633
+
+    - APT(Annotation Processing Tool)即注解处理器，是一种处理注解的工具，确切的说它是javac的一个工具，
+      它用来在编译时扫描和处理注解。注解处理器以Java代码(或者编译过的字节码)作为输入，生成.java文件作为输出。
+      简单来说就是在编译期，通过注解生成.java文件。
+
+      自定义Java注解处理器:https://www.jianshu.com/p/50d95fbf635c 重要
+      Android 自定义注解处理器并生成json文件:https://www.jianshu.com/p/5e4dcf1cc317
+      https://www.jianshu.com/p/7af58e8e3e18
+
+    - link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
+
+    - 注解处理器调试： https://www.jianshu.com/p/e2fb317bd4de
+
+    - 如何调试 打印日志，可以在Build 工具栏中看到打印的日志。
+
+# AMS
+    - AMS是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。
+      在编译项目编译期间，通过自定义plugin和自定义Transform,扫描class 文件和jar包，找到目标文件，
+      在目标文件中通过ASM动态插入代码。
 
 # app 编译流程
 
 # 打包流程
-
-# AMS
-- AMS是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。
-
-#注解 和 apt 技术
-
-- 注解：https://blog.csdn.net/hai_qing_xu_kong/article/details/51779695?utm_source=distribute.pc_relevant.none-task
-  运行时注解（动态注解）：一般配合反射机制使用，相对编译时注解性能比较低，但是灵活性强。eg:Retrofit使用运行时注解。
-  编译时注解（静态注解）：编译时注解能够自动处理Java源文件，并可以根据需要生成新的文件。eg:ButterKnife。
-  Android & Java 注解和自定义注解处理器：https://www.jianshu.com/p/aeb93a3d33d1?from=timeline
-  自定义注解处理器：https://blog.csdn.net/u014780554/article/details/79918633
-
-- APT(Annotation Processing Tool)即注解处理器，是一种处理注解的工具，确切的说它是javac的一个工具，
-  它用来在编译时扫描和处理注解。注解处理器以Java代码(或者编译过的字节码)作为输入，生成.java文件作为输出。
-  简单来说就是在编译期，通过注解生成.java文件。
-
-  自定义Java注解处理器:https://www.jianshu.com/p/50d95fbf635c 重要
-  Android 自定义注解处理器并生成json文件:https://www.jianshu.com/p/5e4dcf1cc317
-  https://www.jianshu.com/p/7af58e8e3e18
-
-- link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
-
-- 注解处理器调试： https://www.jianshu.com/p/e2fb317bd4de
-
-
-- 解决顺序：
- 1) 注解、自定义注解处理器、生成对应的类
- 2) 自定义插件
- 3）读取指定文件夹下的文件，然后反射初始化；
-
 
 #自定义View-自定义不规则View
 

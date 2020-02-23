@@ -31,7 +31,7 @@ public class AppLifeCycleManager {
     private static void loadAppLike() {
         //通过插件插入类似
         //registerAppLike("com.test.lifecycle_apt.proxy.fly$$ModuleAAppLike$$Proxy");
-        
+
     }
 
     /**
@@ -47,6 +47,9 @@ public class AppLifeCycleManager {
         try {
             Object obj = Class.forName(className).getConstructor().newInstance();
             if (obj instanceof IAppLike) {
+                //表示我们已经通过插件注入代码了
+                REGISTER_BY_PLUGIN = true;
+
                 appLikeList.add((IAppLike) obj);
             }
         } catch (Exception e) {
@@ -80,6 +83,7 @@ public class AppLifeCycleManager {
         loadAppLike();
 
         if (!REGISTER_BY_PLUGIN) {
+            //为了补充，确保插件注册失败
             LogUtils.d("需要扫描所有的类...");
             scanClassFile(context);
         } else {
@@ -107,6 +111,7 @@ public class AppLifeCycleManager {
                 LogUtils.d("set 为空");
                 return;
             }
+
             for (String className : set) {
                 LogUtils.d("className::" + className);
                 Object obj = Class.forName(className).newInstance();

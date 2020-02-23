@@ -59,6 +59,8 @@ public class ClassUtils {
         List<String> paths = getSourcePaths(context);
         final CountDownLatch parserCtl = new CountDownLatch(paths.size());
 
+
+
         for (final String path : paths) {
             //如果有多个dex文件，我们开启多个线程并发扫描
             DefaultPoolExecutor.getInstance().execute(new Runnable() {
