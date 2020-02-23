@@ -26,10 +26,12 @@ public class AppLifeCycleManager {
     private static boolean INIT = false;
 
     /**
-     * 通过插件加载{@link IAppLike}类
+     * 通过插件加载{@link IAppLike}类，在该方法中插入代码
      */
     private static void loadAppLike() {
-
+        //通过插件插入类似
+        //registerAppLike("com.test.lifecycle_apt.proxy.fly$$ModuleAAppLike$$Proxy");
+        
     }
 
     /**
@@ -40,13 +42,15 @@ public class AppLifeCycleManager {
             return;
         }
 
+        LogUtils.i("className == " + className);
+
         try {
             Object obj = Class.forName(className).getConstructor().newInstance();
             if (obj instanceof IAppLike) {
                 appLikeList.add((IAppLike) obj);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(Log.getStackTraceString(e));
         }
     }
 

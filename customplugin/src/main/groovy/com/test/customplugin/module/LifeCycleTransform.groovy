@@ -80,7 +80,7 @@ public class LifeCycleTransform extends Transform {
 
             //2、遍历查找所有的jar包
             input.jarInputs.each { JarInput jarInput ->
-                println("\n jarInput = ${jarInput}")
+                //println("\n jarInput = ${jarInput}")
 
                 //与处理class文件一样，处理jar包也是一样，最后要将inputs转换为outputs
                 def jarName = jarInput.name
@@ -109,10 +109,10 @@ public class LifeCycleTransform extends Transform {
         }
 
         appLikeProxyClassList.forEach({ fileName ->
-            println("file name =" + fileName)
+            println("file name = ${fileName} \n")
         })
 
-        println("\n 包含AppLifeCycleManager类的jar文件")
+        println("包含AppLifeCycleManager类的jar文件")
         println(CusScanUtil.FILE_CONTAINS_INIT_CLASS.getAbsolutePath())
 
         println("开始自动注册")

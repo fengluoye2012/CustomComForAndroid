@@ -114,7 +114,7 @@ public class AppLikeCodeInjector {
                 def fullName = CusScanUtil.PROXY_CLASS_PACKAGE_NAME.replace("/", ".") + "." + proxyClassName.substring(0, proxyClassName.length() - 6)
                 println("full className = ${fullName}")
                 mv.visitLdcInsn(fullName)
-                mv.visitMethodInsn(INVOKEDYNAMIC, "com/test/lifecycle_api/AppLifeCycleManager", "registerAppLike", "(Ljava/lang/String;)V", false)
+                mv.visitMethodInsn(INVOKESTATIC, "com/test/lifecycle_api/AppLifeCycleManager", "registerAppLike", "(Ljava/lang/String;)V", false)
             })
         }
 
