@@ -8,7 +8,8 @@
 技术点：
 1）自定义注解和自定义注解处理器，生成class文件。
 2）groovy 语法、自定义gradle插件.
-3）自定义Transform,通过AMS 在编译期间，动态插入代码.
+3）自定义Transform,通过ASM在编译期间，动态插入代码.
+4）读取dex文件，通过指定包名，读取class 文件。 通过包名扫描其中的所有的类 todo
 
 解决步骤：
  1) 注解、自定义注解处理器、生成对应的类
@@ -132,14 +133,19 @@ https://www.jianshu.com/p/59368ce8b670
 
     - 如何调试 打印日志，可以在Build 工具栏中看到打印的日志。
 
-# AMS
-    - AMS是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。
-      在编译项目编译期间，通过自定义plugin和自定义Transform,扫描class 文件和jar包，找到目标文件，
+# ASM
+    - ASM是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。
+      在编译项目编译期间，通过自定义Plugin和自定义Transform,扫描class 文件和jar包，找到目标文件，
       在目标文件中通过ASM动态插入代码。
+
+      【Android】函数插桩（Gradle + ASM）：https://www.jianshu.com/p/16ed4d233fd1
 
 # app 编译流程
 
 # 打包流程
+
+
+# VirtualAPK 滴滴插件化方案
 
 #自定义View-自定义不规则View
 

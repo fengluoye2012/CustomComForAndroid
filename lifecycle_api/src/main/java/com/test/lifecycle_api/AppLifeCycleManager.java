@@ -83,7 +83,7 @@ public class AppLifeCycleManager {
         loadAppLike();
 
         if (!REGISTER_BY_PLUGIN) {
-            //为了补充，确保插件注册失败
+            //为了补充，确保插件注册失败，通过包名扫描其中的所有的类 todo
             LogUtils.d("需要扫描所有的类...");
             scanClassFile(context);
         } else {
