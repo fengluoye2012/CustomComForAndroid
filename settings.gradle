@@ -1,129 +1,43 @@
-gradle.settingsEvaluated {
-    println("settings 执行settingsEvaluated")
-}
+//gradle.settingsEvaluated {
+//    println("settings 执行settingsEvaluated")
+//}
+//
+//gradle.projectsLoaded {
+//    println("settings 执行projectsLoaded")
+//}
+//
+//gradle.projectsEvaluated {
+//    println("settings 执行projectsEvaluated")
+//}
+//
+//gradle.beforeProject { proj ->
+//    println("setting 执行" + proj.name + "beforeProject")
+//}
+//
+//
+//gradle.afterProject { proj ->
+//    println("setting 执行 " + proj.name + " afterProject")
+//}
 
-gradle.projectsLoaded {
-    println("settings 执行projectsLoaded")
-}
+//gradle.buildStarted {
+//    println("构建开始")
+//}
+//
+//gradle.buildFinished {
+//    println("构建结束")
+//}
+//
+//def taskGraph = gradle.getTaskGraph()
+//taskGraph.whenReady {
+//    println("task  whenReady")
+//}
+//
+//taskGraph.beforeTask { Task task ->
+//    println("任务名称：" + task.name + ", beforeTask")
+//}
+//
+//taskGraph.afterTask { Task task ->
+//    println("任务名称：" + task.name + ",afterTask")
+//}
 
-gradle.projectsEvaluated {
-    println("settings 执行projectsEvaluated")
-}
-
-gradle.beforeProject { proj ->
-    println("setting 执行" + proj.name + "beforeProject")
-}
-
-
-gradle.afterProject { proj ->
-    println("setting 执行 " + proj.name + " afterProject")
-}
-
-gradle.buildStarted {
-    println("构建开始")
-}
-
-gradle.buildFinished {
-    println("构建结束")
-}
-
-def taskGraph = gradle.getTaskGraph()
-taskGraph.whenReady {
-    println("task  whenReady")
-}
-
-taskGraph.beforeTask { Task task ->
-    println("任务名称：" + task.name + ", beforeTask")
-}
-
-taskGraph.afterTask { Task task ->
-    println("任务名称：" + task.name + ",afterTask")
-}
-
-gradle.addListener(new BuildListener() {
-    @Override
-    void buildStarted(Gradle gradle) {
-
-    }
-
-    @Override
-    void settingsEvaluated(Settings settings) {
-
-    }
-
-    @Override
-    void projectsLoaded(Gradle gradle) {
-
-    }
-
-    @Override
-    void projectsEvaluated(Gradle gradle) {
-
-    }
-
-    @Override
-    void buildFinished(BuildResult result) {
-
-    }
-})
-
-gradle.addListener(new TaskExecutionListener() {
-
-    @Override
-    void beforeExecute(Task task) {
-
-    }
-
-    @Override
-    void afterExecute(Task task, TaskState state) {
-
-    }
-})
-
-gradle.addListener(new ProjectEvaluationListener() {
-    @Override
-    void beforeEvaluate(Project project) {
-
-    }
-
-    @Override
-    void afterEvaluate(Project project, ProjectState state) {
-
-    }
-})
-
-gradle.addListener(new TaskExecutionGraphListener() {
-    @Override
-    void graphPopulated(TaskExecutionGraph graph) {
-
-    }
-})
-
-gradle.addBuildListener(new BuildListener() {
-    @Override
-    void buildStarted(Gradle gradle) {
-
-    }
-
-    @Override
-    void settingsEvaluated(Settings settings) {
-
-    }
-
-    @Override
-    void projectsLoaded(Gradle gradle) {
-
-    }
-
-    @Override
-    void projectsEvaluated(Gradle gradle) {
-
-    }
-
-    @Override
-    void buildFinished(BuildResult result) {
-
-    }
-})
-
-include ':app', ':customplugin'
+include ':app', ':customplugin', ':lifecycle_annotation', ':lifecycle_api', ':lifecycle_apt'

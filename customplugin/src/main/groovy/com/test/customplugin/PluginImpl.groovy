@@ -2,6 +2,7 @@ package com.test.customplugin
 
 import org.gradle.BuildListener
 import org.gradle.BuildResult
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -20,6 +21,16 @@ class PluginImpl implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+
+
+        project.getTasks().create("hello", MyTask.class, new Action<MyTask>() {
+            @Override
+            void execute(MyTask myTask) {
+                myTask.str = "aaaaaaaaa"
+                myTask.say()
+                myTask.str = "hello"
+            }
+        })
 
         //监听每个task的执行
         project.getGradle().addListener(new TaskExecutionListener() {

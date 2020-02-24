@@ -1,51 +1,66 @@
 apply plugin: 'com.android.application'
 apply plugin: 'davis'
 
-apply from: '../groovy/Base.gradle'
-apply from: '../groovy/ClassTest.gradle'
-apply from: '../groovy/ClosureTest.gradle'
-apply from: '../groovy/CustomExtension.gradle'
-apply from: '../groovy/DomainObjTest.gradle'
+//apply from: '../groovy/Base.gradle'
+//apply from: '../groovy/ClassTest.gradle'
+//apply from: '../groovy/ClosureTest.gradle'
+//apply from: '../groovy/CustomExtension.gradle'
+//apply from: '../groovy/DomainObjTest.gradle'
 
-println("app 子项目配置开始")
+//println("app 子项目配置开始")
 
-afterEvaluate {
-    println("app 子项目afterEvaluate 回调")
-}
+//afterEvaluate {
+//    println("app 子项目afterEvaluate 回调")
+//}
 
-task(appTest) {
-    println("app子项目里任务配置")
-    doLast {
-        println("执行子项目任务")
-    }
-}
+//task(appTest) {
+//    println("app子项目里任务配置")
+//    doLast {
+//        println("执行子项目任务")
+//    }
+//}
 
-println("app 子项目配置结束")
+
+//println("app 子项目配置结束")
 
 android {
-    compileSdkVersion 29
+
+    compileSdkVersion versions.compileSdkVersion
     defaultConfig {
-        applicationId "com.test.gradle"
-        minSdkVersion 15
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        applicationId appconfig.applicationId
+        minSdkVersion versions.minSdkVersion
+        targetSdkVersion versions.targetSdkVersion
+        versionCode appconfig.versionCode
+        versionName appconfig.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    api deps.appcompat
+    api deps.constraintlayout
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.test.espresso
+    api deps.util
+
+
+    implementation project(":lifecycle_annotation")
+    implementation project(":lifecycle_api")
+    //引用插件 配置注解处理器
+    annotationProcessor project(":lifecycle_apt")
 }
 

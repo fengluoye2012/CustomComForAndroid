@@ -1,0 +1,14 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //auto service 这是谷歌提供的一个自动服务注册框架，需要用到 需要添加一下两个  否则自定义注解处理器不执行
+    implementation 'com.google.auto.service:auto-service:1.0-rc3'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc3'
+
+    implementation project(':lifecycle_annotation')
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"

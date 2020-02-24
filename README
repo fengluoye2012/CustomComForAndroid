@@ -1,11 +1,32 @@
 目标：
-1）熟练掌握gradle语法、生命周期
-2）和Hook 联系起来
-3）动态加载、删除组件
+ - 熟练掌握gradle语法、生命周期
+ - 在编译期间动态的在class文件中注入代码或者修改代码
+ - 实现组件化插件，类似目前正在使用的JIMU；
+ - 根据实际需求自定义注解，并实现相关业务逻辑，如登录判断，熟练掌握上述技能
+ - ButterKnife 框架模仿实现
+ - 插件化框架 VirtualApk 实现原理
+ - 其他plugin 的学习掌握
+
+
+技术点：
+1）自定义注解和自定义注解处理器，生成class文件。
+2）groovy 语法、自定义gradle插件.
+3）自定义Transform,通过ASM在编译期间，动态插入代码.
+4）读取dex文件，通过指定包名，读取class 文件。 通过包名扫描其中的所有的类 todo
+
+解决步骤：
+ 1) 注解、自定义注解处理器、生成对应的类
+ 2) 自定义插件
+ 3）读取指定文件夹下的文件，然后反射初始化；
+
 
 Gradle资源：
 https://www.jianshu.com/p/2e19268bf387
 https://www.jianshu.com/p/4fbf352ffc56
+Gradle用户手册：https://docs.gradle.org/current/userguide/userguide.html
+组件化自动注册管理：https://www.jianshu.com/p/59368ce8b670
+Gradle用户手册中文版：http://blog.didispace.com/books/GradleUserGuide/
+深入理解Android之Gradle：https://blog.csdn.net/innost/article/details/48228651
 
 Gradle:
 1)
@@ -23,6 +44,8 @@ doLast：task执行时最后执行的操作
 
 beforeEvaluate 必须在父模块的 build.gradle 对子模块进行配置才能生效，因为在当前模块的 build.gradle 中配置，它自己本身都没配置好，所以不会监听到。
 
+6、Gradle 属性：局部变量：def; 扩展属性使用：ext 扩展块,可以添加多个属性
+
 
 
 2)命令(mac中)
@@ -31,21 +54,19 @@ beforeEvaluate 必须在父模块的 build.gradle 对子模块进行配置才能
 
 3)gradle的生命周期：
 初始化（Initialization）
-初始化（Initialization）
 配置(Configuration)
 执行（Execution）
 
 4)自定义插件（plugin）
 https://blog.csdn.net/wangzhongshun/article/details/88381058
-https://www.jianshu.com/p/3ec8e9574aaf
 
 5）Transform使用场景：
+简单来说就是能够让开发者在项目构建阶段即由class到dex转换期间修改class文件，Transform阶段会扫描所有的class文件和资源文件
+
 1、我们需要对编译class文件做自定义的处理。
 2、我们需要读取编译产生的class文件，做一些其他事情，但是不需要修改它。
 https://www.jianshu.com/p/031b62d02607
-https://www.jianshu.com/p/49425d46ea4f
-
-
+https://blog.csdn.net/yulong0809/article/details/77752098
 
 
 相关资料
@@ -56,3 +77,97 @@ Groory语法：https://www.jianshu.com/p/fe3aede00fd3
 2)调用自定义的.gradle文件
 2.1)在app目录下的build.gradle配置apply from: '../groovy/XXX.gradle'
 2.2)直接点击task旁边的run或者./gradlew 文件名
+
+
+组件化的问题：
+1）如何自动化注册组件：
+解决当组件有增、删时需要，手动改变，不易维护，同时先后注册顺序需要不断变化；
+
+
+组件化的核心思想：
+
+组件化--组件自动注册方案：
+1、一种更高效的组件自动注册方案(android组件化开发)：https://blog.csdn.net/cdecde111/article/details/78074692
+
+2、Android彻底组件化demo发布--生命周期：https://www.jianshu.com/p/59822a7b2fad   特别重要
+解释了字节码插入方式和反射调用方式，在什么时机加载组件，以及如何加载组件
+
+在什么时机加载组件以及如何加载组件？目前com.dd.comgradle提供了两种方式，字节码插入和反射调用。
+
+- 字节码插入模式是在dex生成之前，扫描所有的ApplicationLike类（其有一个共同的父类），然后通过javassist在主项目的Application.onCreate()
+中插入调用ApplicationLike.onCreate()的代码。这样就相当于每个组件在application启动的时候就加载起来了。
+
+- 反射调用的方式是手动在Application.onCreate()中或者在其他合适的时机手动通过反射的方式来调用ApplicationLike.onCreate()。
+之所以提供这种方式原因有两个：对代码进行扫描和插入会增加编译的时间，特别在debug的时候会影响效率，并且这种模式对Instant Run支持不好；
+另一个原因是可以更灵活的控制加载或者卸载时机。
+这两种模式的配置是通过配置com.dd.comgradle的Extension来实现的，
+下面是字节码插入的模式下的配置格式，添加applicationName的目的是加快定位Application的速度。
+
+todo 反射的方式在合适加载、卸载module? 可以考虑在调用组件的时候加载，但是何时卸载呢  只能通过Application类的onTerminate()方法卸载。
+
+3、组件生命周期管理：https://www.jianshu.com/p/65433846d38a
+组件生命周期如何实现自动注册：https://www.jianshu.com/p/59368ce8b670
+自定义gradle 插件： https://www.jianshu.com/p/3ec8e9574aaf
+
+demo:
+Android组件化开发实践（九）：自定义Gradle插件:
+https://www.jianshu.com/p/3ec8e9574aaf
+Android组件化开发实践（八）：组件生命周期如何实现自动注册管理
+https://www.jianshu.com/p/59368ce8b670
+
+#注解 和 apt 技术
+
+    - 注解：https://blog.csdn.net/hai_qing_xu_kong/article/details/51779695?utm_source=distribute.pc_relevant.none-task
+      运行时注解（动态注解）：一般配合反射机制使用，相对编译时注解性能比较低，但是灵活性强。eg:Retrofit使用运行时注解。
+      编译时注解（静态注解）：编译时注解能够自动处理Java源文件，并可以根据需要生成新的文件。eg:ButterKnife。
+      Android & Java 注解和自定义注解处理器：https://www.jianshu.com/p/aeb93a3d33d1?from=timeline
+      自定义注解处理器：https://blog.csdn.net/u014780554/article/details/79918633
+
+    - APT(Annotation Processing Tool)即注解处理器，是一种处理注解的工具，确切的说它是javac的一个工具，
+      它用来在编译时扫描和处理注解。注解处理器以Java代码(或者编译过的字节码)作为输入，生成.java文件作为输出。
+      简单来说就是在编译期，通过注解生成.java文件。
+
+      自定义Java注解处理器:https://www.jianshu.com/p/50d95fbf635c 重要
+      Android 自定义注解处理器并生成json文件:https://www.jianshu.com/p/5e4dcf1cc317
+      https://www.jianshu.com/p/7af58e8e3e18
+
+    - link 注解：类标签 {@link 类名}  方法标签 {@link #方法名}
+
+    - 注解处理器调试： https://www.jianshu.com/p/e2fb317bd4de
+
+    - 如何调试 打印日志，可以在Build 工具栏中看到打印的日志。
+
+# ASM
+    - ASM是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。ASM 可以直接产生二进制 class 文件，
+      也可以在类被加载入 Java 虚拟机之前动态改变类行为。Java class 被存储在严格格式定义的 .class 文件里，
+      这些类文件拥有足够的元数据来解析类中的所有元素：类名称、方法、属性以及 Java 字节码（指令）。
+      ASM 从类文件中读入信息后，能够改变类行为，分析类信息，甚至能够根据用户要求生成新类。
+
+
+      在编译项目编译期间，通过自定义Plugin和自定义Transform,扫描class 文件和jar包，找到目标文件，
+      在目标文件中通过ASM动态插入代码。
+
+     【Android】函数插桩（Gradle + ASM）：https://www.jianshu.com/p/16ed4d233fd1
+      Class文件格式实战：使用ASM动态生成class文件：https://blog.csdn.net/zhangjg_blog/article/details/22976929
+
+    - 通过ASM Bytecode Outline插件生成代码
+
+
+# app 编译流程
+
+# 打包流程
+
+
+# VirtualAPK 滴滴插件化方案
+
+#自定义View-自定义不规则View
+
+
+# Android 高阶
+ - Android高级面试题： https://www.jianshu.com/p/29499ba2d9aa
+ -Android中高级进阶知识点整理：https://blog.csdn.net/lou_liang/article/details/8285653
+
+
+
+
+

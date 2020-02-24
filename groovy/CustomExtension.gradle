@@ -3,6 +3,8 @@ class UserInfo {
     int sex
     String headIcon
 
+    UserInfo() {}
+
     UserInfo(String userName, int sex, String headIcon) {
         this.userName = userName
         this.sex = sex
@@ -22,7 +24,15 @@ class UserInfo {
 
 //创建一个userInfo 的UserInfo
 def userInfo = getExtensions().create("userInfo", UserInfo, "fengluoye", 1, "")
-getExtensions().create("tem", UserInfo, "fengluoye2012", 1, "hhhhh")
+
+//创建一个名为 tem 的Extension
+getExtensions().create("tem", UserInfo)
+
+tem {
+    userInfo = "fengluoye2012"
+    sex = 1
+    headIcon = 'hhhhh'
+}
 
 task testExt {
     doLast {
