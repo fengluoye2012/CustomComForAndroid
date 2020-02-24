@@ -1,18 +1,21 @@
 目标：
  - 熟练掌握gradle语法、生命周期
  - 在编译期间动态的在class文件中注入代码或者修改代码
- - 实现组件化插件，类似目前正在使用的JIMU；
+ - 实现组件化插件，类似目前正在使用的JIMU组件化框架；
+    - 动态加载插件
+        - 反射调用
+        - 字节码插入方式，动态调用
+    - 各组件之间的业务跳转
+        - ARouter原理剖析及手动实现：https://www.jianshu.com/p/857aea5b54a8
+ - ButterKnife 框架模仿实现及其他plugin 的学习掌握
  - 根据实际需求自定义注解，并实现相关业务逻辑，如登录判断，熟练掌握上述技能
- - ButterKnife 框架模仿实现
  - 插件化框架 VirtualApk 实现原理
- - 其他plugin 的学习掌握
-
 
 技术点：
 1）自定义注解和自定义注解处理器，生成class文件。
 2）groovy 语法、自定义gradle插件.
 3）自定义Transform,通过ASM在编译期间，动态插入代码.
-4）读取dex文件，通过指定包名，读取class 文件。 通过包名扫描其中的所有的类 todo
+4）读取dex文件，通过指定包名，读取class 文件。 通过包名扫描其中的所有的类
 
 解决步骤：
  1) 注解、自定义注解处理器、生成对应的类
@@ -160,7 +163,7 @@ https://www.jianshu.com/p/59368ce8b670
 
 # VirtualAPK 滴滴插件化方案
 
-#自定义View-自定义不规则View
+
 
 
 # Android 高阶
@@ -168,6 +171,11 @@ https://www.jianshu.com/p/59368ce8b670
  -Android中高级进阶知识点整理：https://blog.csdn.net/lou_liang/article/details/8285653
 
 
+# 技能点
+  - 自定义View-自定义不规则View
+  - WebSocket 基于OkHttp 实现长链接
+    基于okhttp和RxJava封装的自动重连的WebSocket： https://blog.csdn.net/huiAndroid/article/details/78071703?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
 
+  - RandomAccessFile  视频分片
 
 
