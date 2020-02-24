@@ -1,8 +1,11 @@
 目标：
-1）熟练掌握gradle语法、生命周期
-2）和Hook 联系起来
-3）动态加载、删除组件
-4）插件化、热修复：动态编译技术，在编译期间动态的在class文件中注入代码或者修改代码
+ - 熟练掌握gradle语法、生命周期
+ - 在编译期间动态的在class文件中注入代码或者修改代码
+ - 实现组件化插件，类似目前正在使用的JIMU；
+ - 根据实际需求自定义注解，并实现相关业务逻辑，如登录判断，熟练掌握上述技能
+ - ButterKnife 框架模仿实现
+ - 插件化框架 VirtualApk 实现原理
+ - 其他plugin 的学习掌握
 
 
 技术点：
@@ -23,6 +26,7 @@ https://www.jianshu.com/p/4fbf352ffc56
 Gradle用户手册：https://docs.gradle.org/current/userguide/userguide.html
 组件化自动注册管理：https://www.jianshu.com/p/59368ce8b670
 Gradle用户手册中文版：http://blog.didispace.com/books/GradleUserGuide/
+深入理解Android之Gradle：https://blog.csdn.net/innost/article/details/48228651
 
 Gradle:
 1)
@@ -134,11 +138,20 @@ https://www.jianshu.com/p/59368ce8b670
     - 如何调试 打印日志，可以在Build 工具栏中看到打印的日志。
 
 # ASM
-    - ASM是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。
+    - ASM是一个Java字节码操控框架，能够被用来动态生成类或者增强既有类的功能。ASM 可以直接产生二进制 class 文件，
+      也可以在类被加载入 Java 虚拟机之前动态改变类行为。Java class 被存储在严格格式定义的 .class 文件里，
+      这些类文件拥有足够的元数据来解析类中的所有元素：类名称、方法、属性以及 Java 字节码（指令）。
+      ASM 从类文件中读入信息后，能够改变类行为，分析类信息，甚至能够根据用户要求生成新类。
+
+
       在编译项目编译期间，通过自定义Plugin和自定义Transform,扫描class 文件和jar包，找到目标文件，
       在目标文件中通过ASM动态插入代码。
 
-      【Android】函数插桩（Gradle + ASM）：https://www.jianshu.com/p/16ed4d233fd1
+     【Android】函数插桩（Gradle + ASM）：https://www.jianshu.com/p/16ed4d233fd1
+      Class文件格式实战：使用ASM动态生成class文件：https://blog.csdn.net/zhangjg_blog/article/details/22976929
+
+    - 通过ASM Bytecode Outline插件生成代码
+
 
 # app 编译流程
 
@@ -149,6 +162,10 @@ https://www.jianshu.com/p/59368ce8b670
 
 #自定义View-自定义不规则View
 
+
+# Android 高阶
+ - Android高级面试题： https://www.jianshu.com/p/29499ba2d9aa
+ -Android中高级进阶知识点整理：https://blog.csdn.net/lou_liang/article/details/8285653
 
 
 

@@ -48,7 +48,7 @@ public class AppLifeCycleManager {
             Object obj = Class.forName(className).getConstructor().newInstance();
             if (obj instanceof IAppLike) {
                 //表示我们已经通过插件注入代码了
-                REGISTER_BY_PLUGIN = true;
+                //REGISTER_BY_PLUGIN = true;
 
                 appLikeList.add((IAppLike) obj);
             }
