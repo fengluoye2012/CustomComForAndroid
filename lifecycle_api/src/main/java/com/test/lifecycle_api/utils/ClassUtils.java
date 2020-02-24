@@ -8,6 +8,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.blankj.utilcode.util.LogUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -42,10 +44,6 @@ public class ClassUtils {
     private static final int VM_WITH_MULTIDEX_VERSION_MAJOR = 2;
     private static final int VM_WITH_MULTIDEX_VERSION_MINOR = 1;
 
-    private static SharedPreferences getMultiDexPreferences(Context context) {
-        return context.getSharedPreferences(PREFS_FILE, Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? Context.MODE_PRIVATE : Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
-    }
-
     /**
      * 通过指定包名，扫描包下面包含的所有的ClassName
      *
@@ -58,8 +56,6 @@ public class ClassUtils {
         //获取所有的class源文件，通常为classes.dex文件
         List<String> paths = getSourcePaths(context);
         final CountDownLatch parserCtl = new CountDownLatch(paths.size());
-
-
 
         for (final String path : paths) {
             //如果有多个dex文件，我们开启多个线程并发扫描
@@ -79,8 +75,10 @@ public class ClassUtils {
                         while (dexEntries.hasMoreElements()) {
                             //遍历读取出所有的class名称，类的全限定名称
                             String className = dexEntries.nextElement();
+                            LogUtils.i("className==" + className);
                             //如果以我们指定的包名开头，则表示是我们的目标类
                             if (className.startsWith(packageName)) {
+                                LogUtils.i("target  className==" + className);
                                 classNames.add(className);
                             }
                         }
@@ -111,6 +109,13 @@ public class ClassUtils {
      */
     public static List<String> getSourcePaths(Context context) throws PackageManager.NameNotFoundException, IOException {
         ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
+        String className = applicationInfo.className;
+        String packageName = applicationInfo.packageName;
+
+        LogUtils.i("packageName ：： " + packageName);
+
+        String sourceDir = applicationInfo.sourceDir;
+
         File sourceApk = new File(applicationInfo.sourceDir);
 
         List<String> sourcePaths = new ArrayList<>();
@@ -140,6 +145,10 @@ public class ClassUtils {
         }
 
         return sourcePaths;
+    }
+
+    private static SharedPreferences getMultiDexPreferences(Context context) {
+        return context.getSharedPreferences(PREFS_FILE, Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? Context.MODE_PRIVATE : Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
     }
 
     /**

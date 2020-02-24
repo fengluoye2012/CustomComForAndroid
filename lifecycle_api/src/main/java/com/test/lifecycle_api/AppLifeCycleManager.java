@@ -7,7 +7,7 @@ import android.util.Log;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.test.lifecycle_annotation.LifeCycleConfig;
-import com.test.lifecycle_api.utils.ClassUtils;
+import com.test.lifecycle_api.utils.ApkClassUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +83,7 @@ public class AppLifeCycleManager {
         loadAppLike();
 
         if (!REGISTER_BY_PLUGIN) {
-            //为了补充，确保插件注册失败，通过包名扫描其中的所有的类 todo
+            //为了补充，确保插件注册失败，通过包名扫描其中的所有的类
             LogUtils.d("需要扫描所有的类...");
             scanClassFile(context);
         } else {
@@ -106,7 +106,8 @@ public class AppLifeCycleManager {
     private static void scanClassFile(Context context) {
 
         try {
-            Set<String> set = ClassUtils.getFileNameByPackageName(context, LifeCycleConfig.PROXY_CLASS_PACKAGE_NAME);
+            //Set<String> set = ClassUtils.getFileNameByPackageName(context, LifeCycleConfig.PROXY_CLASS_PACKAGE_NAME);
+            Set<String> set = ApkClassUtils.getFileNameByPackageName(context, LifeCycleConfig.PROXY_CLASS_PACKAGE_NAME);
             if (ObjectUtils.isEmpty(set)) {
                 LogUtils.d("set 为空");
                 return;
@@ -116,7 +117,7 @@ public class AppLifeCycleManager {
                 LogUtils.d("className::" + className);
                 Object obj = Class.forName(className).newInstance();
                 if (obj instanceof IAppLike) {
-                    appLikeList.add((IAppLike) obj);
+                    // appLikeList.add((IAppLike) obj);
                 }
             }
         } catch (Exception e) {
