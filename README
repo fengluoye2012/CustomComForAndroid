@@ -11,17 +11,22 @@
  - 根据实际需求自定义注解，并实现相关业务逻辑，如登录判断，熟练掌握上述技能
  - 插件化框架 VirtualApk 实现原理
 
+
+问题：
+- 主工程build.gradle 如何动态加载各个子Module,如何通过配置判断运行单个module、还是整个app todo
+
 技术点：
 1）自定义注解和自定义注解处理器，生成class文件。
 2）groovy 语法、自定义gradle插件.
-3）自定义Transform,通过ASM在编译期间，动态插入代码.
+3）自定义plugin、自定义Transform,通过ASM在编译期间，动态插入代码.
 4）读取dex文件，通过指定包名，读取class 文件。 通过包名扫描其中的所有的类
+5）深入理解gradle,自定义Extension,并且往build.gradle 文件动态写入代码。
 
 解决步骤：
  1) 注解、自定义注解处理器、生成对应的类
  2) 自定义插件
  3）读取指定文件夹下的文件，然后反射初始化；
- 4）主工程gradle 如何动态加载各个子Module; todo
+ 4）自定义plugin在主工程的build.gradle 文件中的dependencies 中插入需要依赖的module。
 
 
 Gradle资源：
@@ -176,7 +181,16 @@ https://www.jianshu.com/p/59368ce8b670
   - 自定义View-自定义不规则View
   - WebSocket 基于OkHttp 实现长链接
     基于okhttp和RxJava封装的自动重连的WebSocket： https://blog.csdn.net/huiAndroid/article/details/78071703?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
-
   - RandomAccessFile  视频分片
+  - git Hook
 
+  - implementation 和 api 的区别
+    api 和2.X版本的compile相同
 
+    implementation指令：只能在内部使用此模块，比如在一个libiary中使用implementation依赖了gson库，
+    然后主项目依赖了libiary，那么，我的主项目就无法访问gson库中的方法，这样的好处是编译速度会加快。
+    就是仅在自己的module中使用，其他依赖该module的module 不能访问该引用库。
+
+    以一个例子来简单说明一下这个关系 模块A B C, A imp/api B , A和B的依赖关系imp和api不去关心，关键来看B和C依赖关系的区别.
+    B imp C : 这种情况下，A不能引用C的公开接口
+    B api C : 这种情况下，A可以引用到C的公开接口

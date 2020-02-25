@@ -5,10 +5,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 
-public class LifeCyclePlugin implements Plugin<Project> {
+class LifeCyclePlugin implements Plugin<Project> {
 
     @Override
-    public void apply(Project project) {
+    void apply(Project project) {
         println("---- LifeCycle plugin entrance ----")
 
         def android = project.getExtensions().getByType(AppExtension)

@@ -90,6 +90,11 @@ public class AppLifeCycleManager {
     private static void scanClassFile(Context context) {
         Set<String> set = ApkClassUtils.getFileNameByPackageName(context, LifeCycleConfig.PROXY_CLASS_PACKAGE_NAME);
 
+        if (ObjectUtils.isEmpty(set)) {
+            LogUtils.i("set  为空");
+            return;
+        }
+
         for (String className : set) {
             LogUtils.d("className::" + className);
             //registerAppLike(className);
