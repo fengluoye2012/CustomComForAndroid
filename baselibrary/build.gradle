@@ -2,13 +2,14 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion versions.compileSdkVersion
-
     defaultConfig {
         minSdkVersion versions.minSdkVersion
         targetSdkVersion versions.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appconfig.versionCode
+        versionName appconfig.versionName
+
         testInstrumentationRunner versions.testInstrumentationRunner
+
     }
 
     buildTypes {
@@ -26,10 +27,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(":baselibrary")
 
-    implementation project(":lifecycle_annotation")
-    implementation project(":lifecycle_api")
-    //引用插件 配置注解处理器
-    annotationProcessor project(":lifecycle_apt")
+    api deps.appcompat
+    api deps.constraintlayout
+    androidTestImplementation deps.test.runner
+    androidTestImplementation deps.test.espresso
+    api deps.util
 }

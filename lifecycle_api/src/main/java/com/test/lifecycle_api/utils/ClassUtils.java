@@ -33,6 +33,7 @@ import dalvik.system.DexFile;
  * @since 16/6/27 下午10:58
  */
 public class ClassUtils {
+
     private static final String EXTRACTED_NAME_EXT = ".classes";
     private static final String EXTRACTED_SUFFIX = ".zip";
 

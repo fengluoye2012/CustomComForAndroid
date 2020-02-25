@@ -32,7 +32,7 @@ android {
         targetSdkVersion versions.targetSdkVersion
         versionCode appconfig.versionCode
         versionName appconfig.versionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner versions.testInstrumentationRunner
     }
 
     buildTypes {
@@ -51,12 +51,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api deps.appcompat
-    api deps.constraintlayout
-    androidTestImplementation deps.test.runner
-    androidTestImplementation deps.test.espresso
-    api deps.util
-
+    implementation project(":baselibrary")
+    implementation project(":test")
 
     implementation project(":lifecycle_annotation")
     implementation project(":lifecycle_api")

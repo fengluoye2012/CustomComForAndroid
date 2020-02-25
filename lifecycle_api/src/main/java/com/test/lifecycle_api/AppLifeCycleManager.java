@@ -48,26 +48,13 @@ public class AppLifeCycleManager {
             Object obj = Class.forName(className).getConstructor().newInstance();
             if (obj instanceof IAppLike) {
                 //表示我们已经通过插件注入代码了
-                //REGISTER_BY_PLUGIN = true;
-
+                REGISTER_BY_PLUGIN = true;
                 appLikeList.add((IAppLike) obj);
             }
         } catch (Exception e) {
             LogUtils.e(Log.getStackTraceString(e));
         }
     }
-
-    /**
-     * 注册IAppLike
-     *
-     * @param appLike
-     */
-    public static void registerAppLike(IAppLike appLike) {
-        //表示我们已经通过插件注入代码了
-        REGISTER_BY_PLUGIN = true;
-        appLikeList.add(appLike);
-    }
-
 
     /**
      * 初始化，需要在Application.onCreate()里调用
@@ -82,13 +69,10 @@ public class AppLifeCycleManager {
         //通过插件加载IAppLike类
         loadAppLike();
 
-        if (!REGISTER_BY_PLUGIN) {
-            //为了补充，确保插件注册失败，通过包名扫描其中的所有的类
-            LogUtils.d("需要扫描所有的类...");
-            scanClassFile(context);
-        } else {
-            LogUtils.d("插件里已自动注册...");
+        if (REGISTER_BY_PLUGIN) {
+            LogUtils.i("通过插件在家IAppLike类");
         }
+        scanClassFile(context);
 
         //根据优先级排序
         Collections.sort(appLikeList, new AppLikeComparator());
@@ -104,33 +88,20 @@ public class AppLifeCycleManager {
      * @param context
      */
     private static void scanClassFile(Context context) {
+        Set<String> set = ApkClassUtils.getFileNameByPackageName(context, LifeCycleConfig.PROXY_CLASS_PACKAGE_NAME);
 
-        try {
-            //Set<String> set = ClassUtils.getFileNameByPackageName(context, LifeCycleConfig.PROXY_CLASS_PACKAGE_NAME);
-            Set<String> set = ApkClassUtils.getFileNameByPackageName(context, LifeCycleConfig.PROXY_CLASS_PACKAGE_NAME);
-            if (ObjectUtils.isEmpty(set)) {
-                LogUtils.d("set 为空");
-                return;
-            }
-
-            for (String className : set) {
-                LogUtils.d("className::" + className);
-                Object obj = Class.forName(className).newInstance();
-                if (obj instanceof IAppLike) {
-                    // appLikeList.add((IAppLike) obj);
-                }
-            }
-        } catch (Exception e) {
-            LogUtils.e(Log.getStackTraceString(e));
+        for (String className : set) {
+            LogUtils.d("className::" + className);
+            //registerAppLike(className);
         }
     }
+
 
     public static void terminate() {
         for (IAppLike appLike : appLikeList) {
             appLike.onTerminate();
         }
     }
-
 
     /**
      * 优先级比较器，优先级较大的排在前面

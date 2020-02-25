@@ -8,7 +8,7 @@ android {
         targetSdkVersion versions.targetSdkVersion
         versionCode appconfig.versionCode
         versionName appconfig.versionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner versions.testInstrumentationRunner
     }
 
     buildTypes {
