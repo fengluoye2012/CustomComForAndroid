@@ -93,6 +93,12 @@ class LifeCyclePlugin implements Plugin<Project> {
         }
     }
 
+    /**
+     * taskNames集合中的元素类似：
+     * [:customplugin:assemble, :customplugin:testClasses, :lifecycle_apt:assemble, :lifecycle_apt:testClasses, :app:assembleDebug]
+     * @param taskNames
+     * @return
+     */
     private AssembleTask getTaskInfo(List<String> taskNames) {
         AssembleTask assembleTask = new AssembleTask()
         for (String task : taskNames) {

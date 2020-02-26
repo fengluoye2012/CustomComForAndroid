@@ -9,6 +9,12 @@ android {
         versionCode appconfig.versionCode
         versionName appconfig.versionName
         testInstrumentationRunner versions.testInstrumentationRunner
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [host: "app"]
+            }
+        }
     }
 
     buildTypes {
@@ -25,17 +31,18 @@ android {
 }
 
 comBuild {
-    isRegisterCompoAuto true
-    applicationName "com.test.gradle.MyApplication"
+    isRegisterCompoAuto = true
+    applicationName = "com.test.gradle.MyApplication"
 }
 
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(":componentservice")
-    implementation project(":test")
-
     //引用插件 配置注解处理器
     annotationProcessor project(":lifecycle_apt")
+
+    //gradle 插件会根据gradle.properties动态添加，所以不需要手动添加引用
+    //implementation project(":test")
 }
 

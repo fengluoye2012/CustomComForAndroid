@@ -6,7 +6,7 @@ import javassist.CtMethod
 import org.gradle.api.Project
 
 /**
- * 在生成的class 文件中插入 代码
+ * 使用javassist 在生成的class 文件中插入 代码
  */
 class MyInjects {
 
@@ -43,9 +43,7 @@ class MyInjects {
 
                         //获取到OnCreate()方法
                         CtMethod ctMethod = ctClass.getDeclaredMethod("onCreate")
-
                         println("方法名 == " + ctMethod)
-
                         String insetBeforeStr = """ android.widget.Toast.makeText(this,"我是被插入的Toast代码~!!",android.widget.Toast.LENGTH_SHORT).show(); """
 
                         //在方法开头插入代码
@@ -55,7 +53,6 @@ class MyInjects {
                         ctClass.detach()
                     }
                 }
-
             }
         }
     }

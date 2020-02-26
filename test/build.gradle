@@ -9,6 +9,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner versions.testInstrumentationRunner
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [host: "test"]
+            }
+        }
     }
 
     buildTypes {
@@ -25,8 +31,8 @@ android {
 }
 
 comBuild {
-    isRegisterCompoAuto true
-    applicationName "com.test.test.TestApplication"
+    isRegisterCompoAuto = false
+    applicationName = "com.test.test.TestApplication"
 }
 
 
