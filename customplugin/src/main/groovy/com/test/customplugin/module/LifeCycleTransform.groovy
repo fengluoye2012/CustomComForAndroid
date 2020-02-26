@@ -8,7 +8,9 @@ import org.gradle.api.Project
 
 /**
  * Gradle Transform技术，简单来说就是能够让开发者在项目构建阶段即由class到dex转换期间修改class文件，
- * Transform阶段会扫描所有的class文件和资源文件
+ * Transform阶段会扫描所有的class文件和资源文件，找到目标class 文件，并通过ASM 在指定文件的方法中插入相关代码。
+ *
+ * 这种方式的缺点：编译事件长
  */
 public class LifeCycleTransform extends Transform {
 
@@ -43,6 +45,9 @@ public class LifeCycleTransform extends Transform {
     }
 
 
+    /**
+     * 扫描所有的文件，找到目标class 文件
+     */
     @Override
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation)
@@ -108,6 +113,9 @@ public class LifeCycleTransform extends Transform {
             }
         }
 
+        /**
+         * 遍历目标class类全名称
+         */
         appLikeProxyClassList.forEach({ fileName ->
             println("file name = ${fileName} \n")
         })

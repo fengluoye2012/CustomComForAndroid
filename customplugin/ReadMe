@@ -1,0 +1,5 @@
+# 自定义gradle 插件，是组件化核心逻辑如
+
+- 如何切换library、application的问题
+- 如何在module、主工程中动态引入其他依赖module
+- 如何自动加载各个Module,加载优先级问题

@@ -1,4 +1,4 @@
-package com.test.customplugin;
+package com.test.customplugin.test;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;

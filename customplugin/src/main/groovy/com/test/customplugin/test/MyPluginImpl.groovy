@@ -1,4 +1,4 @@
-package com.test.customplugin
+package com.test.customplugin.test
 
 import com.android.build.gradle.AppExtension
 import org.gradle.api.Plugin
@@ -13,6 +13,16 @@ public class MyPluginImpl implements Plugin<Project> {
     public void apply(Project project) {
 
         println("-------- 开始 ----------")
+
+        /*
+          自定义gradle中的extensions，在项目中的build.gradle中加入
+          extensionsTest {
+             name 'fengluoye'
+             age 20
+          }
+        */
+        project.extensions.add("extensionsTest", Person)
+
 
         //AppExtension就是build.gradle中android{...}这一块
         def android = project.getExtensions().getByType(AppExtension)

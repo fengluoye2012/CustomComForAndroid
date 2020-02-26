@@ -1,3 +1,5 @@
+package com.test.customplugin.test
+
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import org.gradle.internal.FileUtils
@@ -36,7 +38,7 @@ public class CustomTransform extends Transform {
 
     @Override
     String getName() {
-        return "CustomTransform"
+        return "com.test.customplugin.test.CustomTransform"
     }
 
     //只获取class 文件

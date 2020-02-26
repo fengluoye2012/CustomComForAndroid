@@ -1,0 +1,2 @@
+# 自定义注解
+和lifecycle_api module以及lifecycle_apt module 配合一起处理路由跳转、各个子module的初始化问题。

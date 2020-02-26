@@ -1,43 +1,8 @@
-//gradle.settingsEvaluated {
-//    println("settings 执行settingsEvaluated")
-//}
-//
-//gradle.projectsLoaded {
-//    println("settings 执行projectsLoaded")
-//}
-//
-//gradle.projectsEvaluated {
-//    println("settings 执行projectsEvaluated")
-//}
-//
-//gradle.beforeProject { proj ->
-//    println("setting 执行" + proj.name + "beforeProject")
-//}
-//
-//
-//gradle.afterProject { proj ->
-//    println("setting 执行 " + proj.name + " afterProject")
-//}
-
-//gradle.buildStarted {
-//    println("构建开始")
-//}
-//
-//gradle.buildFinished {
-//    println("构建结束")
-//}
-//
-//def taskGraph = gradle.getTaskGraph()
-//taskGraph.whenReady {
-//    println("task  whenReady")
-//}
-//
-//taskGraph.beforeTask { Task task ->
-//    println("任务名称：" + task.name + ", beforeTask")
-//}
-//
-//taskGraph.afterTask { Task task ->
-//    println("任务名称：" + task.name + ",afterTask")
-//}
-
-include ':app', ':customplugin', ':lifecycle_annotation', ':lifecycle_api', ':lifecycle_apt', ':baselibrary', ":test"
+include ':app',
+        ':customplugin',
+        ':lifecycle_annotation',
+        ':lifecycle_api',
+        ':lifecycle_apt',
+        ':baselibrary',
+        ':componentservice',
+        ":test"

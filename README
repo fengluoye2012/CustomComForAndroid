@@ -13,7 +13,12 @@
 
 
 问题：
-- 主工程build.gradle 如何动态加载各个子Module,如何通过配置判断运行单个module、还是整个app todo
+- 主工程、module 如何动态加载其他依赖的Module,如何通过配置判断运行单个module、还是整个app
+
+  1）通过gradle 的Plugin中的project，读取各个module中的gradle.properties中设置的属性debugComponent或者compileComponent，
+     动态向build.gradle中的dependencies 中写入依赖
+  2）和1）类似，读取读取各个module中的gradle.properties中设置的属性isRunAlone，判断是library还是application
+
 
 技术点：
 1）自定义注解和自定义注解处理器，生成class文件。
@@ -28,6 +33,7 @@
  3）读取指定文件夹下的文件，然后反射初始化；
  4）自定义plugin在主工程的build.gradle 文件中的dependencies 中插入需要依赖的module。
 
+# Gradle相关技术点
 
 Gradle资源：
 https://www.jianshu.com/p/2e19268bf387
@@ -54,6 +60,7 @@ Gradle:主要概念：Task、Project、Extension、Plugin、Transform
     beforeEvaluate 必须在父模块的 build.gradle 对子模块进行配置才能生效，因为在当前模块的 build.gradle 中配置，它自己本身都没配置好，所以不会监听到。
 
     6、Gradle 属性：局部变量：def; 扩展属性使用：ext 扩展块,可以添加多个属性
+    7、Project 相关属性
 
 2)执行命令(mac中)
     ./gradlew taskName 执行某一个task
@@ -78,7 +85,8 @@ Gradle:主要概念：Task、Project、Extension、Plugin、Transform
 6）gradle 相关实践
     - Android开发Gradle高级技巧、自定义Gradle Task、打包完成自动签名、执行Shell脚本
       https://cloud.tencent.com/developer/article/1407423
-    - 自定义Extension
+    - 自定义Extension：https://blog.csdn.net/verymrq/article/details/80426594?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
+
 
 相关资料
 1）Gradle--语言基础Groovy;
@@ -91,8 +99,7 @@ Groory语法：https://www.jianshu.com/p/fe3aede00fd3
 
 
 
-
-组件化的问题：
+# 组件化的问题：
 1）如何自动化注册组件：
 解决当组件有增、删时需要，手动改变，不易维护，同时先后注册顺序需要不断变化；
 
@@ -164,6 +171,9 @@ https://www.jianshu.com/p/59368ce8b670
       Class文件格式实战：使用ASM动态生成class文件：https://blog.csdn.net/zhangjg_blog/article/details/22976929
 
     - 通过ASM Bytecode Outline插件生成代码
+
+
+# javassist 和ASM 的作用一样
 
 
 # app 编译流程

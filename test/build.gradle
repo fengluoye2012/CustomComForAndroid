@@ -26,10 +26,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(":baselibrary")
+    implementation project(":componentservice")
 
-    implementation project(":lifecycle_annotation")
-    implementation project(":lifecycle_api")
     //引用插件 配置注解处理器
     annotationProcessor project(":lifecycle_apt")
 }

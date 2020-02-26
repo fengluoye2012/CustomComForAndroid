@@ -1,14 +1,15 @@
 apply plugin: 'com.android.library'
 
 android {
-
     compileSdkVersion versions.compileSdkVersion
     defaultConfig {
         minSdkVersion versions.minSdkVersion
         targetSdkVersion versions.targetSdkVersion
         versionCode appconfig.versionCode
         versionName appconfig.versionName
+
         testInstrumentationRunner versions.testInstrumentationRunner
+
     }
 
     buildTypes {
@@ -18,21 +19,18 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    api deps.appcompat
-    api deps.constraintlayout
-    androidTestImplementation deps.test.runner
-    androidTestImplementation deps.test.espresso
-    api deps.util
+    api project(":baselibrary")
 
-    api project(':lifecycle_annotation')
+    api project(":lifecycle_annotation")
+    api project(":lifecycle_api")
 
 }
-
-sourceCompatibility = 1.7
-targetCompatibility = 1.7

@@ -1,4 +1,4 @@
-package com.test.customplugin
+package com.test.customplugin.test
 
 import org.gradle.BuildListener
 import org.gradle.BuildResult

@@ -11,6 +11,8 @@ import java.util.zip.ZipEntry
 
 /**
  * 在目标class 中动态插入代码
+ * 根据Transform中找到的 目标class文件全类名，插入AppLifeCycleManager的loadAppLike()方法中
+ * 如：registerAppLike("com.test.lifecycle_apt.proxy.fly$$ModuleAAppLike$$Proxy");
  */
 public class AppLikeCodeInjector {
 

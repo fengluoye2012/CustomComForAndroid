@@ -7,7 +7,7 @@ dependencies {
     implementation 'com.google.auto.service:auto-service:1.0-rc3'
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc3'
 
-    implementation project(':lifecycle_annotation')
+    api project(':lifecycle_annotation')
 }
 
 sourceCompatibility = "8"

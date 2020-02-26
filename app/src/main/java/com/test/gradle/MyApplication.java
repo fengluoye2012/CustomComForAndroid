@@ -1,22 +1,19 @@
 package com.test.gradle;
 
-import android.app.Application;
 import android.util.Log;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.test.lifecycle_annotation.LifeCycleConfig;
+import com.test.baselibrary.base.BaseApplication;
 import com.test.lifecycle_api.AppLifeCycleManager;
-import com.test.lifecycle_api.utils.ApkClassUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Set;
 
 import dalvik.system.DexFile;
 
-public class MyApplication extends Application {
+public class MyApplication extends BaseApplication {
 
     @Override
     public void onCreate() {

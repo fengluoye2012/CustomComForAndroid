@@ -1,4 +1,4 @@
-package com.test.customplugin
+package com.test.customplugin.test
 
 import javassist.ClassPool
 import javassist.CtClass
