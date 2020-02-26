@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+apply plugin: 'davis'
 
 android {
     compileSdkVersion versions.compileSdkVersion
@@ -23,6 +23,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+comBuild {
+    isRegisterCompoAuto true
+    applicationName "com.test.test.TestApplication"
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

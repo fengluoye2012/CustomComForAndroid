@@ -1,8 +1,6 @@
 apply plugin: 'davis'
 
-
 android {
-
     compileSdkVersion versions.compileSdkVersion
     defaultConfig {
         applicationId appconfig.applicationId

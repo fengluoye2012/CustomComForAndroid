@@ -7,13 +7,14 @@ import org.gradle.api.Project
 
 class LifeCyclePlugin implements Plugin<Project> {
 
+    private String TAG = LifeCyclePlugin.class.getSimpleName()
+
     //默认是app，直接运行assembleRelease的时候，等同于运行app:assembleRelease
     String compileModule = "app"
 
     @Override
     void apply(Project project) {
         println("---- LifeCycle plugin entrance ----")
-
         gradleConfigDeal(project)
 
 

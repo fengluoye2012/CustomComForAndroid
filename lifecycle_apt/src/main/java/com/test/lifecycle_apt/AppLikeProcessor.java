@@ -64,7 +64,6 @@ public class AppLikeProcessor extends AbstractProcessor {
         messager = processingEnvironment.getMessager();
         filer = processingEnvironment.getFiler();
 
-        System.out.println("--AppLikeProcessor----init()------");
         messager.printMessage(Diagnostic.Kind.NOTE, "--AppLikeProcessor----init()------");
     }
 
@@ -105,7 +104,6 @@ public class AppLikeProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
-        System.out.println("----AppLikeProcessor -----process--");
         messager.printMessage(Diagnostic.Kind.NOTE, "----AppLikeProcessor -----process--");
 
 
@@ -143,7 +141,6 @@ public class AppLikeProcessor extends AbstractProcessor {
             //该类的全限定类名
             String fullClassName = typeElement.getQualifiedName().toString();
             if (!map.containsKey(fullClassName)) {
-                System.out.println("process class name:" + fullClassName);
                 messager.printMessage(Diagnostic.Kind.NOTE, "process class name:" + fullClassName);
 
                 //创建代理类生成器
@@ -152,7 +149,6 @@ public class AppLikeProcessor extends AbstractProcessor {
             }
         }
 
-        System.out.println("start to generate proxy class");
         messager.printMessage(Diagnostic.Kind.NOTE, "start to generate proxy class");
 
         //开始生成代理类
@@ -161,7 +157,6 @@ public class AppLikeProcessor extends AbstractProcessor {
             String className = entry.getKey();
             AppLikeProxyClassCreator creator = entry.getValue();
 
-            System.out.println("generate proxy class for" + className);
             messager.printMessage(Diagnostic.Kind.NOTE, "generate proxy class for" + className);
 
             /*
