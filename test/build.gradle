@@ -31,8 +31,8 @@ android {
 }
 
 comBuild {
-    isRegisterCompoAuto = false
-    applicationName = "com.test.test.TestApplication"
+    isRegisterCompoAuto = true
+    applicationName = "com.test.test.runAlone.TestApplication"
 }
 
 
@@ -41,5 +41,7 @@ dependencies {
     implementation project(":componentservice")
 
     //引用插件 配置注解处理器
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     annotationProcessor project(":lifecycle_apt")
 }

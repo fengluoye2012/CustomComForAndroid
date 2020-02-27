@@ -1,4 +1,4 @@
-package com.test.test;
+package com.test.test.runAlone;
 
 import com.test.baselibrary.base.BaseApplication;
 

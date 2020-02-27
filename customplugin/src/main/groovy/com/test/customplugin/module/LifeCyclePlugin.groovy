@@ -17,10 +17,6 @@ class LifeCyclePlugin implements Plugin<Project> {
         println("---- LifeCycle plugin entrance ----")
         gradleConfigDeal(project)
 
-
-        def android = project.getExtensions().getByType(AppExtension)
-        //在插件中注册该Transform
-        android.registerTransform(new LifeCycleTransform(project))
     }
 
 
@@ -37,11 +33,11 @@ class LifeCyclePlugin implements Plugin<Project> {
         //
         project.extensions.create(Config.EXTENSIONS_NAME, ComExtension)
 
-        def taskNames = project.gradle.startParameter.taskNames.toString()
-        println("taskNames::${taskNames}")
+        String taskNames = project.gradle.startParameter.taskNames.toString()
+        println("taskNames is ${taskNames}")
 
-        def module = project.path.replace(":", "")
-        println("current module  is::${module}")
+        String module = project.path.replace(":", "")
+        println("current module  is ${module}")
 
         AssembleTask assembleTask = getTaskInfo(project.gradle.startParameter.taskNames)
         if (assembleTask.isAssemble) {
@@ -55,7 +51,7 @@ class LifeCyclePlugin implements Plugin<Project> {
         }
 
         //对于isRunAlone == true的情况 需要根据实际情况修改其值，但如果是false 就不用修改
-        def isRunAlone = Boolean.parseBoolean(project.properties.get(Config.IS_RUN_ALONE_PARA))
+        boolean isRunAlone = Boolean.parseBoolean(project.properties.get(Config.IS_RUN_ALONE_PARA))
         def mainModuleName = project.rootProject.property(Config.MAIN_MODULE_NAME_PARA)
         if (isRunAlone && assembleTask.isAssemble) {
             //这对于要编译的组件和主项目，isRunAlone 修改为true,其他组件都强制修改为false
@@ -72,7 +68,10 @@ class LifeCyclePlugin implements Plugin<Project> {
         //根据配置添加各种组件依赖，并且自动化生成组件加载代码
         if (isRunAlone) {
             project.apply plugin: 'com.android.application'
+
+            //不是主工程的话,配置sourceSets。
             if (!module.equals(mainModuleName)) {
+                println("${module} is run alone")
                 project.android.sourceSets {
                     main {
                         manifest.srcFile 'src/main/runAlone/AndroidManifest.xml'
@@ -83,13 +82,19 @@ class LifeCyclePlugin implements Plugin<Project> {
                     }
                 }
             }
-            println("apply plugin is com.android.application")
+            println("${module} apply plugin is com.android.application")
             if (assembleTask.isAssemble && module.equals(compileModule)) {
                 compileComponents(assembleTask, project)
+                //todo 注册Transform
+
+                //可以用 project.android 代替 project.getExtensions().getByType(AppExtension)
+                def android = project.getExtensions().getByType(AppExtension)
+                //在插件中注册该Transform
+                android.registerTransform(new LifeCycleTransform(project))
             }
         } else {
             project.apply plugin: 'com.android.library'
-            println("apply plugin is " + 'com.android.library')
+            println("${module} apply plugin is " + 'com.android.library')
         }
     }
 
@@ -170,6 +175,8 @@ class LifeCyclePlugin implements Plugin<Project> {
             return
         }
 
+        println("需要添加的依赖：${components}")
+
         String[] compileComponents = components.split(",")
         if (compileComponents == null || compileComponents.length == 0) {
             println("there is no add dependencies")
@@ -177,7 +184,7 @@ class LifeCyclePlugin implements Plugin<Project> {
         }
 
         for (String str : compileComponents) {
-            println("comp is ${str}")
+            println("需要添加的依赖：comp is ${str}")
             if (str.contains(":")) {
                 /**
                  * 示例语法:groupId:artifactId:version(@aar)

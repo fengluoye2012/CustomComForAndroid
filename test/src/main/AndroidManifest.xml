@@ -1,2 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.test.test" />
+    package="com.test.test">
+
+    <application>
+        <activity android:name=".TestActivity" />
+    </application>
+</manifest>
