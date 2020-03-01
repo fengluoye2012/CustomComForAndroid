@@ -32,6 +32,7 @@
  2) 自定义插件
  3）读取指定文件夹下的文件，然后反射初始化；
  4）自定义plugin在主工程的build.gradle 文件中的dependencies 中插入需要依赖的module。
+ 5) 自定义注解实现路由跳转
 
 # Gradle相关技术点
 
