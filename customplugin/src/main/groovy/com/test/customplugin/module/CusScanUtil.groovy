@@ -25,7 +25,7 @@ class CusScanUtil {
      * @return
      */
     static boolean isTargetProxyClass(File file) {
-        return file.name.endsWith(PROXY_CLASS_SUFFIX) && file.name.startsWith(PROXY_CLASS_PREFIX)
+        return file.name.startsWith(PROXY_CLASS_PREFIX) && file.name.endsWith(PROXY_CLASS_SUFFIX)
     }
 
 
@@ -57,6 +57,7 @@ class CusScanUtil {
                 //通过APT生成的类，都有统一的前缀、后缀
                 if (entryName.startsWith(PROXY_CLASS_PACKAGE_NAME)) {
                     println("----  通过APT生成的类，都有统一的前缀、后缀 ----\n")
+                    //entryName 把"/"替换为"." 就是全类名
                     println("entryName==${entryName}\n")
 
                     if (list == null) {

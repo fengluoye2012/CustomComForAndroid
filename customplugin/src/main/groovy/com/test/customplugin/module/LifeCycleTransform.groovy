@@ -8,7 +8,12 @@ import org.gradle.api.Project
 
 /**
  * Gradle Transform技术，简单来说就是能够让开发者在项目构建阶段即由class到dex转换期间修改class文件，
- * Transform阶段会扫描所有的class文件和资源文件，找到目标class 文件，并通过ASM 在指定文件的方法中插入相关代码。
+ * Transform阶段会扫描所有的class文件和资源文件，找到目标class文件(即IAppLike 其子类的代理类,根据包名和文件名成的规则来确定)，
+ * 并通过ASM 在指定文件的方法中插入相关代码。
+ *
+ * 这里可以使用三种方式来做1）ASM，如当前方式；2）javassist 找到目标class文件（即IAppLike的子类，可以通过获取其实现的接口集合，确定是否包含目标接口）
+ * 3)在运行时通过获取指定包名的IAppLike 其子类的代理类，缺点就是影响性能，冷启动会慢
+ *
  *
  * 这种方式的缺点：编译事件长
  */
@@ -71,6 +76,7 @@ public class LifeCycleTransform extends Transform {
                     directoryInput.file.eachFileRecurse { File file ->
                         //形如fly$$*****$$Proxy.class的类，是我们要找的目标class,直接通过class的名称来判断，也可以再加上包名的判断，更严谨些
                         if (CusScanUtil.isTargetProxyClass(file)) {
+                            println("target's  file.parent is ${file.parent}")
                             //如果是我们自己生产的代理类，保存该类的类名
                             appLikeProxyClassList.add(file.name)
                         }
