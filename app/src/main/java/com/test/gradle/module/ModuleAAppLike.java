@@ -11,6 +11,7 @@ import com.test.lifecycle_api.IAppLike;
  */
 @AppLifeCycle
 public class ModuleAAppLike implements IAppLike {
+
     @Override
     public int getPriority() {
         return NORM_PRIORITY;
