@@ -15,6 +15,12 @@ import org.gradle.api.Project
  * 3)在运行时通过获取指定包名的IAppLike 其子类的代理类，缺点就是影响性能，冷启动会慢
  *
  *
+ * 1）找到IAppLike子类的代理类集合，并在{@link AppLifeCycleManager}的loadAppLike()方法中插入
+ * registerAppLike("com.test.lifecycle_apt.proxy.fly$$ModuleAAppLike$$Proxy");代码
+ * 2）找到作为主工程（即主工程或者单独运行的module）的Application 子类，并在onCreate()方法中插入
+ * AppLifeCycleManager.init(getApplicationContext());
+ * 避免在每个子module 中添加该方法。
+ *
  * 这种方式的缺点：编译事件长
  */
 public class LifeCycleTransform extends Transform {
