@@ -85,8 +85,6 @@ class LifeCyclePlugin implements Plugin<Project> {
             println("${module} apply plugin is com.android.application")
             if (assembleTask.isAssemble && module.equals(compileModule)) {
                 compileComponents(assembleTask, project)
-                //todo 注册Transform
-
                 //可以用 project.android 代替 project.getExtensions().getByType(AppExtension)
                 def android = project.getExtensions().getByType(AppExtension)
                 //在插件中注册该Transform

@@ -23,35 +23,40 @@ import org.gradle.api.Project
  *
  * 这种方式的缺点：编译事件长
  */
-public class LifeCycleTransform extends Transform {
+class LifeCycleTransform extends Transform {
 
     Project project
 
-    public LifeCycleTransform(Project project) {
+    /**
+     * 当前作为主工程的Application
+     */
+    String applicationName
+
+    LifeCycleTransform(Project project) {
         this.project = project
     }
 
     //该Transform的名称，自定义即可，只是一个标示
     @Override
-    public String getName() {
+    String getName() {
         return "LifeCycleTransform"
     }
 
     //该Transform支持扫描的文件类型，分为class文件和资源文件，我们这里只处理class文件扫描
     @Override
-    public Set<QualifiedContent.ContentType> getInputTypes() {
+    Set<QualifiedContent.ContentType> getInputTypes() {
         return TransformManager.CONTENT_CLASS
     }
 
     //Transform的扫描范围，扫描整个工程，包括当前module及其他jar包、arr文件等所有的class
     @Override
-    public Set<? super QualifiedContent.Scope> getScopes() {
+    Set<? super QualifiedContent.Scope> getScopes() {
         return TransformManager.SCOPE_FULL_PROJECT
     }
 
     //是否增量扫描
     @Override
-    public boolean isIncremental() {
+    boolean isIncremental() {
         return true
     }
 
@@ -60,7 +65,7 @@ public class LifeCycleTransform extends Transform {
      * 扫描所有的文件，找到目标class 文件
      */
     @Override
-    public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
+    void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation)
 
         println("start to transform ----->>>>>>")
@@ -70,6 +75,8 @@ public class LifeCycleTransform extends Transform {
         def referencedInputs = transformInvocation.referencedInputs
         def outputProvider = transformInvocation.outputProvider
         def incremental = transformInvocation.incremental
+
+        getRealApplication()
 
         def appLikeProxyClassList = []
 
@@ -145,4 +152,19 @@ public class LifeCycleTransform extends Transform {
 
         println("transform finish -----------<<<<\n")
     }
+
+
+    /**
+     * 获取作为主工程的Application
+     */
+    void getRealApplication() {
+        applicationName = project.extensions.comBuild.applicationName
+        if (applicationName == null || applicationName.isEmpty()) {
+            throw new RuntimeException("you should set applicationName in comBuild in current module's build.gradle")
+        }
+        println("applicationName is ${applicationName}")
+    }
+
+
+
 }
