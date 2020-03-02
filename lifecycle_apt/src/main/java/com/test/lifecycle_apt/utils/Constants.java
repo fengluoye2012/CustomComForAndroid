@@ -36,6 +36,7 @@ public class Constants {
     public static final String FRAGMENT_V4 = "android.support.v4.app.Fragment";
     public static final String SERVICE = "android.app.Service";
     public static final String PARCELABLE = "android.os.Parcelable";
+    public static final String SERIALIZABLE = "java.io.Serializable";
 
     // Java type
     public static final String LANG = "java.lang";
@@ -44,7 +45,7 @@ public class Constants {
     public static final String INTEGER = LANG + ".Integer";
     public static final String LONG = LANG + ".Long";
     public static final String FLOAT = LANG + ".Float";
-    public static final String DOUBEL = LANG + ".Double";
+    public static final String DOUBLE = LANG + ".Double";
     public static final String BOOLEAN = LANG + ".Boolean";
     public static final String STRING = LANG + ".String";
 

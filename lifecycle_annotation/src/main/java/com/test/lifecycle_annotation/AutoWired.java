@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 用来修饰成员变量的注解
  * 用来解析intent、Bundle 参数传递
  */
 @Target(ElementType.FIELD)

@@ -7,6 +7,7 @@ import com.test.lifecycle_annotation.enums.NodeType;
 import com.test.lifecycle_annotation.model.Node;
 import com.test.lifecycle_apt.utils.Constants;
 import com.test.lifecycle_apt.utils.Logger;
+import com.test.lifecycle_apt.utils.StringUtils;
 import com.test.lifecycle_apt.utils.TypeUtils;
 
 import java.io.BufferedWriter;
@@ -44,7 +45,6 @@ import javax.tools.JavaFileObject;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class RouteNodeProcessor extends AbstractProcessor {
 
-    private static final String INTERFACE_NAME = "";
     private Elements elementUtils;
 
     //用于文件处理
@@ -83,6 +83,7 @@ public class RouteNodeProcessor extends AbstractProcessor {
         typeUtils = new TypeUtils(types, elementUtils);
         typeString = elementUtils.getTypeElement("java.lang.String").asType();
 
+        //
         Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
             host = options.get(Constants.KEY_HOST_NAME);
@@ -110,10 +111,15 @@ public class RouteNodeProcessor extends AbstractProcessor {
             return false;
         }
 
-        //这里返回所有使用了AppLifeCycle 注解的元素
+        //这里返回所有使用了RouteNode 注解的元素
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(RouteNode.class);
 
-        parseRouteNodes(elements);
+        try {
+            logger.info("Found routes start");
+            parseRouteNodes(elements);
+        } catch (Exception e) {
+            logger.error(e);
+        }
 
 
         //开始生成代理类
@@ -155,13 +161,17 @@ public class RouteNodeProcessor extends AbstractProcessor {
 
     private void parseRouteNodes(Set<? extends Element> elements) {
 
+        //返回给定类型，并返回该元素的定义类型
         TypeMirror typeActivity = elementUtils.getTypeElement(Constants.ACTIVITY).asType();
 
         //遍历所有使用了该注解的元素
         for (Element element : elements) {
+            //返回该元素的定义类型
             TypeMirror tm = element.asType();
+            //获取注解，然后可以获取注解中的参数
             RouteNode routeNode = element.getAnnotation(RouteNode.class);
 
+            //判断t1是否作为t2的子类
             if (types.isSubtype(tm, typeActivity)) {
                 logger.info("Found activity route is " + tm.toString());
                 Node node = new Node();
@@ -175,20 +185,68 @@ public class RouteNodeProcessor extends AbstractProcessor {
                 node.setRawType(element);
 
                 Map<String, Integer> paramsType = new HashMap<>();
-                Map<String, Integer> paramsDesc = new HashMap<>();
+                Map<String, String> paramsDesc = new HashMap<>();
 
                 //遍历所有的成员变量
-                for (Element filed : element.getEnclosedElements()) {
-                    if (filed.getKind().isField() && filed.getAnnotation(AutoWired.class) != null) {
-                        AutoWired autoWired = filed.getAnnotation(AutoWired.class);
-                        paramsType.put(StringU)
+                for (Element field : element.getEnclosedElements()) {
+                    //判断是否为成员变量类型，并且是否添加了{@link AutoWired} 注解
+                    if (field.getKind().isField() && field.getAnnotation(AutoWired.class) != null) {
+                        //获取成员变量的注解，可以获取参数的值
+                        AutoWired paramConfig = field.getAnnotation(AutoWired.class);
+                        paramsType.put(StringUtils.isEmpty(paramConfig.name())
+                                ? field.getSimpleName().toString() : paramConfig.name(), typeUtils.typeExchange(field));
+
+                        paramsDesc.put(StringUtils.isEmpty(paramConfig.name()) ? field.getSimpleName().toString() :
+                                paramConfig.name(), typeUtils.typeDesc(field));
                     }
                 }
+                node.setParamsType(paramsType);
+                node.setParamsDesc(paramsDesc);
+
+                if (!routeNodes.contains(node)) {
+                    routeNodes.add(node);
+                }
+            } else {
+                throw new IllegalStateException("only activity can be annotated by RouteNode");
             }
         }
     }
 
-    private void checkPath(String path) {
 
+    /**
+     * path 校验
+     *
+     * @param path
+     */
+    private void checkPath(String path) {
+        if (path == null || path.isEmpty() || !path.startsWith("/")) {
+            throw new IllegalStateException("path cannot be null or empty and should start with /,this is " + path);
+        }
+
+        if (path.contains("//") || path.contains("&") || path.contains("?")) {
+            throw new IllegalArgumentException("path should not contain // ,& or ?,this is:" + path);
+        }
+
+        if (path.endsWith("/"))
+            throw new IllegalArgumentException("path should not endWith /,this is:" + path
+                    + ";or append a token:index");
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
