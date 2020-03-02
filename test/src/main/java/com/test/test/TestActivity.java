@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.test.lifecycle_annotation.RouteNode;
+
+@RouteNode(path = "/test/TestActivity", desc = "测试类")
 public class TestActivity extends AppCompatActivity {
 
     @Override

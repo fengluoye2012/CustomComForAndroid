@@ -1,12 +1,12 @@
 package com.test.gradle;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.util.Log;
+import com.test.lifecycle_annotation.RouteNode;
 
-import com.blankj.utilcode.util.LogUtils;
-
+@RouteNode(path = "/main/MainActivity", desc = "主界面")
 public class MainActivity extends AppCompatActivity {
 
     @Override
