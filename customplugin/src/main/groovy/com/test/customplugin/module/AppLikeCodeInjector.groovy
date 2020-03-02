@@ -14,7 +14,7 @@ import java.util.zip.ZipEntry
  * 根据Transform中找到的 目标class文件全类名，插入AppLifeCycleManager的loadAppLike()方法中
  * 如：registerAppLike("com.test.lifecycle_apt.proxy.fly$$ModuleAAppLike$$Proxy");
  */
-public class AppLikeCodeInjector {
+class AppLikeCodeInjector {
 
     //扫描出来的所有IAppLike类
     List<String> proxyAppLikeClassList
@@ -24,7 +24,7 @@ public class AppLikeCodeInjector {
      */
     private String TARGET_METHOD_NAME = "loadAppLike"
 
-    public AppLikeCodeInjector(List<String> list) {
+    AppLikeCodeInjector(List<String> list) {
         this.proxyAppLikeClassList = list
     }
 

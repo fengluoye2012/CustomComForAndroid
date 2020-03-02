@@ -19,6 +19,8 @@
      动态向build.gradle中的dependencies 中写入依赖
   2）和1）类似，读取读取各个module中的gradle.properties中设置的属性isRunAlone，判断是library还是application
 
+  3）动态往
+
 
 技术点：
 1）自定义注解和自定义注解处理器，生成class文件。
@@ -101,40 +103,44 @@ Groory语法：https://www.jianshu.com/p/fe3aede00fd3
 
 
 # 组件化的问题：
-1）如何自动化注册组件：
-解决当组件有增、删时需要，手动改变，不易维护，同时先后注册顺序需要不断变化；
+    1）如何自动化注册组件：
+    解决当组件有增、删时需要，手动改变，不易维护，同时先后注册顺序需要不断变化；
 
 
-组件化的核心思想：
+    组件化的核心思想：
 
-组件化--组件自动注册方案：
-1、一种更高效的组件自动注册方案(android组件化开发)：https://blog.csdn.net/cdecde111/article/details/78074692
+    组件化--组件自动注册方案：
+    1、一种更高效的组件自动注册方案(android组件化开发)：https://blog.csdn.net/cdecde111/article/details/78074692
 
-2、Android彻底组件化demo发布--生命周期：https://www.jianshu.com/p/59822a7b2fad   特别重要
-解释了字节码插入方式和反射调用方式，在什么时机加载组件，以及如何加载组件
+    2、Android彻底组件化demo发布--生命周期：https://www.jianshu.com/p/59822a7b2fad   特别重要
+    解释了字节码插入方式和反射调用方式，在什么时机加载组件，以及如何加载组件
 
-在什么时机加载组件以及如何加载组件？目前com.dd.comgradle提供了两种方式，字节码插入和反射调用。
+    在什么时机加载组件以及如何加载组件？目前com.dd.comgradle提供了两种方式，字节码插入和反射调用。
 
-- 字节码插入模式是在dex生成之前，扫描所有的ApplicationLike类（其有一个共同的父类），然后通过javassist在主项目的Application.onCreate()
-中插入调用ApplicationLike.onCreate()的代码。这样就相当于每个组件在application启动的时候就加载起来了。
+    - 字节码插入模式是在dex生成之前，扫描所有的ApplicationLike类（其有一个共同的父类），然后通过javassist在主项目的Application.onCreate()
+    中插入调用ApplicationLike.onCreate()的代码。这样就相当于每个组件在application启动的时候就加载起来了。
 
-- 反射调用的方式是手动在Application.onCreate()中或者在其他合适的时机手动通过反射的方式来调用ApplicationLike.onCreate()。
-之所以提供这种方式原因有两个：对代码进行扫描和插入会增加编译的时间，特别在debug的时候会影响效率，并且这种模式对Instant Run支持不好；
-另一个原因是可以更灵活的控制加载或者卸载时机。
-这两种模式的配置是通过配置com.dd.comgradle的Extension来实现的，
-下面是字节码插入的模式下的配置格式，添加applicationName的目的是加快定位Application的速度。
+    - 反射调用的方式是手动在Application.onCreate()中或者在其他合适的时机手动通过反射的方式来调用ApplicationLike.onCreate()。
+    之所以提供这种方式原因有两个：对代码进行扫描和插入会增加编译的时间，特别在debug的时候会影响效率，并且这种模式对Instant Run支持不好；
+    另一个原因是可以更灵活的控制加载或者卸载时机。
+    这两种模式的配置是通过配置com.dd.comgradle的Extension来实现的，
+    下面是字节码插入的模式下的配置格式，添加applicationName的目的是加快定位Application的速度。
 
-todo 反射的方式在合适加载、卸载module? 可以考虑在调用组件的时候加载，但是何时卸载呢  只能通过Application类的onTerminate()方法卸载。
+    todo 反射的方式在合适加载、卸载module? 可以考虑在调用组件的时候加载，但是何时卸载呢  只能通过Application类的onTerminate()方法卸载。
 
-3、组件生命周期管理：https://www.jianshu.com/p/65433846d38a
-组件生命周期如何实现自动注册：https://www.jianshu.com/p/59368ce8b670
-自定义gradle 插件： https://www.jianshu.com/p/3ec8e9574aaf
+    3、组件生命周期管理：https://www.jianshu.com/p/65433846d38a
+    组件生命周期如何实现自动注册：https://www.jianshu.com/p/59368ce8b670
+    自定义gradle 插件： https://www.jianshu.com/p/3ec8e9574aaf
 
-demo:
-Android组件化开发实践（九）：自定义Gradle插件:
-https://www.jianshu.com/p/3ec8e9574aaf
-Android组件化开发实践（八）：组件生命周期如何实现自动注册管理
-https://www.jianshu.com/p/59368ce8b670
+    demo:
+    Android组件化开发实践（九）：自定义Gradle插件:
+    https://www.jianshu.com/p/3ec8e9574aaf
+    Android组件化开发实践（八）：组件生命周期如何实现自动注册管理
+    https://www.jianshu.com/p/59368ce8b670
+
+    4、路由跳转思路 todo
+       1）自定义注解，通过注解处理器，将路径path和Class类一一对应起来，class类和需要传递的参数一一对应起来。
+       2）Activity 跳转时，根据路径path来跳转，对path进行解析，然后从1）中找到目标class类、参数，开启Activity跳转。
 
 #注解 和 apt 技术
 
@@ -192,6 +198,8 @@ https://www.jianshu.com/p/59368ce8b670
 
 
 # VirtualAPK 滴滴插件化方案
+
+# VirtualAPP
 
 
 

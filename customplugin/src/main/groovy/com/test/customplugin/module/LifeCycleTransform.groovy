@@ -164,7 +164,4 @@ class LifeCycleTransform extends Transform {
         }
         println("applicationName is ${applicationName}")
     }
-
-
-
 }
