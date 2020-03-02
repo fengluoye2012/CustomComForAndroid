@@ -174,11 +174,18 @@ https://www.jianshu.com/p/59368ce8b670
     - 通过ASM Bytecode Outline插件生成代码
 
     - ASM 简介：https://www.jianshu.com/p/a85e8f83fa14
+    - Android ASM使用：https://www.jianshu.com/p/c017c220ad89
+    - Android ASM快速入门：https://www.jianshu.com/p/d5333660e312
+    - ASM 判定一个类，实现了指定接口： https://blog.csdn.net/weixin_33966365/article/details/91697173
 
 
-# javassist 和ASM 的作用一样，但是ASM效率较高，比较快
-    - javassist使用全解析：https://www.cnblogs.com/rickiyang/p/11336268.html
-    - Java Javassist/ASM 框架比较： https://www.jianshu.com/p/f2a4c7d3745d
+# javassist 和ASM 的作用一样
+
+# javapoet
+  - Android编译时代码生成之二（javapoet）：https://www.jianshu.com/p/c1fa17537739
+  - javapoet：https://github.com/square/javapoet
+  - javassist使用全解析：https://www.cnblogs.com/rickiyang/p/11336268.html
+  - Java Javassist/ASM 框架比较： https://www.jianshu.com/p/f2a4c7d3745d
 # app 编译流程
 
 # 打包流程
