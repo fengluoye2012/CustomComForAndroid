@@ -1,14 +1,22 @@
 package com.test.lifecycle_apt;
 
 import com.google.auto.service.AutoService;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 import com.test.lifecycle_annotation.AutoWired;
 import com.test.lifecycle_annotation.RouteNode;
 import com.test.lifecycle_annotation.enums.NodeType;
 import com.test.lifecycle_annotation.model.Node;
+import com.test.lifecycle_annotation.utils.RouterUtils;
 import com.test.lifecycle_apt.utils.Constants;
+import com.test.lifecycle_apt.utils.FileUtils;
 import com.test.lifecycle_apt.utils.Logger;
 import com.test.lifecycle_apt.utils.StringUtils;
 import com.test.lifecycle_apt.utils.TypeUtils;
+
+import org.apache.commons.collections4.MapUtils;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,6 +35,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
@@ -83,7 +92,6 @@ public class RouteNodeProcessor extends AbstractProcessor {
         typeUtils = new TypeUtils(types, elementUtils);
         typeString = elementUtils.getTypeElement("java.lang.String").asType();
 
-        //
         Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
             host = options.get(Constants.KEY_HOST_NAME);
@@ -121,43 +129,67 @@ public class RouteNodeProcessor extends AbstractProcessor {
             logger.error(e);
         }
 
-
-        //开始生成代理类
-        Set<Map.Entry<String, AppLikeProxyClassCreator>> entries = null;
-        for (Map.Entry<String, AppLikeProxyClassCreator> entry : entries) {
-            String className = entry.getKey();
-            AppLikeProxyClassCreator creator = entry.getValue();
-
-
-            /*
-             * 由于这个文件是在build 过程中创建的，所以只有build成功之后才可以查看到它，对应的在一下目录
-             * app/build/generated/source/apt/debug/<package>/XXX.java
-             *生成代理类，并写入到文件中，生成逻辑都在{@link AppLikeProxyClassCreator} 里实现
-             */
-            BufferedWriter writer = null;
-            try {
-                JavaFileObject jfo = filer.createSourceFile(creator.getProxyClassFullName());
-                //Writer writer = jfo.openWriter();
-                writer = new BufferedWriter(jfo.openWriter());
-                writer.write(creator.generateJavaCode());
-//                writer.flush();
-//                writer.close();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        generateRouterImpl();
+        generateRouterTable();
 
         return true;
     }
+
+    /**
+     * 通过javapoet 生成Java 文件，如KotlinUiRouter.java
+     */
+    private void generateRouterImpl() {
+        //全类名
+        String className = RouterUtils.genHostUIRouterClass(host);
+
+        String pkgName = className.substring(0, className.lastIndexOf(RouterUtils.DOT));
+
+        String simpleName = className.substring(className.lastIndexOf(RouterUtils.DOT) + 1);
+
+        ClassName supperClass = ClassName.get(elementUtils.getTypeElement(Constants.BASE_COMP_ROUTER));
+
+        MethodSpec hostMethod = generateGetHostMethod();
+        MethodSpec initMapMethod = generateInitMapMethod();
+
+        //创建类
+        try {
+            JavaFile.builder(pkgName, TypeSpec.classBuilder(simpleName)
+                    .addModifiers(Modifier.PUBLIC) //类的访问修饰符
+                    .superclass(supperClass) //超类
+                    .addMethod(hostMethod) //添加方法
+                    .addMethod(initMapMethod) //添加方法
+                    .build()
+            ).build().writeTo(filer);
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
+
+    /**
+     * generate HostRouterTable.txt
+     */
+    private void generateRouterTable() {
+        String fileName = RouterUtils.genRouterTable(host);
+        if (FileUtils.createFile(fileName)) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("auto generated, do not change !!!! \n\n");
+            stringBuilder.append("HOST : " + host + "\n\n");
+
+            for (Node node : routeNodes) {
+                stringBuilder.append(node.getDesc() + "\n");
+                stringBuilder.append(node.getPath() + "\n");
+                Map<String, String> paramsType = node.getParamsDesc();
+                if (MapUtils.isNotEmpty(paramsType)) {
+                    for (Map.Entry<String, String> types : paramsType.entrySet()) {
+                        stringBuilder.append(types.getKey() + ":" + types.getValue() + "\n");
+                    }
+                }
+                stringBuilder.append("\n");
+            }
+            FileUtils.writeStringToFile(fileName, stringBuilder.toString(), false);
+        }
+    }
+
 
     private void parseRouteNodes(Set<? extends Element> elements) {
 
@@ -228,25 +260,57 @@ public class RouteNodeProcessor extends AbstractProcessor {
         }
 
         if (path.endsWith("/"))
-            throw new IllegalArgumentException("path should not endWith /,this is:" + path
-                    + ";or append a token:index");
+            throw new IllegalArgumentException("path should not endWith /,this is:" + path + ";or append a token:index");
+    }
+
+
+    /**
+     * 生成getHost方法
+     */
+    private MethodSpec generateGetHostMethod() {
+        return MethodSpec.methodBuilder("getHost")//方法名称
+                //.addParameter(String.class,"") //添加参数
+                .addAnnotation(Override.class)//添加Override 注解
+                .addModifiers(Modifier.PUBLIC)//添加访问
+                .returns(String.class) //返回值
+                .addStatement("return %S", host)//添加代码
+                .build();
+    }
+
+    /**
+     * 生成initMap 方法
+     */
+    private MethodSpec generateInitMapMethod() {
+
+        MethodSpec.Builder builder = MethodSpec.methodBuilder("initMap")//方法名称
+                //.addParameter(String.class,"") //添加参数
+                .addAnnotation(Override.class)//添加Override 注解
+                .addModifiers(Modifier.PUBLIC)//添加访问
+                .returns(Void.class) //返回值
+                .addStatement("super.initMap()");//添加代码
+
+        for (Node node : routeNodes) {
+            builder.addStatement(Constants.ROUTE_MAPPER_FIELD_NAME + ".put($S，$T.class)", node.getPath(),
+                    ClassName.get((TypeElement) node.getRawType()));
+
+            StringBuilder mapBodyBuilder = new StringBuilder();
+            Map<String, Integer> paramsType = node.getParamsType();
+            if (MapUtils.isNotEmpty(paramsType)) {
+                Set<Map.Entry<String, Integer>> entries = paramsType.entrySet();
+                for (Map.Entry<String, Integer> entry : entries) {
+                    mapBodyBuilder.append("put(").append(entry.getKey()).append(", ").append(entry.getValue()).append(");");
+                }
+            }
+
+            String mapBody = mapBodyBuilder.toString();
+            logger.info("mapBody is " + mapBody);
+
+            if (!StringUtils.isEmpty(mapBody)) {
+                builder.addStatement(
+                        Constants.PARAMS_MAPPER_FIELD_NAME + ".put($T.class,new java.util.HashMap<String,Integer>(){{" +
+                                mapBody + "}})", ClassName.get((TypeElement) node.getRawType()));
+            }
+        }
+        return builder.build();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

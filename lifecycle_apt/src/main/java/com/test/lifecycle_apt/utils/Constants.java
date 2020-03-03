@@ -49,4 +49,16 @@ public class Constants {
     public static final String BOOLEAN = LANG + ".Boolean";
     public static final String STRING = LANG + ".String";
 
+
+    /**
+     * 路由跳转基类
+     */
+    public static final String BASE_COMP_ROUTER = "com.test.lifecycle_api.router.ui.BaseCompRouter";
+
+    /**
+     * BaseCompRouter 中的Map 字段
+     */
+    public static final String ROUTE_MAPPER_FIELD_NAME = "routeMapper";
+    public static final String PARAMS_MAPPER_FIELD_NAME = "paramsMapper";
+
 }
