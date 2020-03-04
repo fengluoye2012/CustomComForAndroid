@@ -18,7 +18,6 @@ import com.test.lifecycle_apt.utils.TypeUtils;
 
 import org.apache.commons.collections4.MapUtils;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +39,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.JavaFileObject;
 
 /**
  * 实现注解处理器
@@ -50,9 +48,9 @@ import javax.tools.JavaFileObject;
  * AutoService本身就是一个静态注解，在build/META-INF文件夹下生成了一个service指定文件
  */
 @AutoService(Processor.class)
-@SupportedAnnotationTypes(Constants.ANNOTATION_TYPE_ROUTE)
+@SupportedAnnotationTypes(Constants.ANNOTATION_TYPE_AUTO_WIRED)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class RouteNodeProcessor extends AbstractProcessor {
+public class AutoWiredProcessor extends AbstractProcessor {
 
     private Elements elementUtils;
 
@@ -120,17 +118,17 @@ public class RouteNodeProcessor extends AbstractProcessor {
         }
 
         //这里返回所有使用了RouteNode 注解的元素
-        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(RouteNode.class);
-
-        try {
-            logger.info("Found routes start");
-            parseRouteNodes(elements);
-        } catch (Exception e) {
-            logger.error(e);
-        }
-
-        generateRouterImpl();
-        generateRouterTable();
+//        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(RouteNode.class);
+//
+//        try {
+//            logger.info("Found routes start");
+//            parseRouteNodes(elements);
+//        } catch (Exception e) {
+//            logger.error(e);
+//        }
+//
+//        generateRouterImpl();
+//        generateRouterTable();
 
         return true;
     }

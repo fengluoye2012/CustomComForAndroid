@@ -58,8 +58,8 @@ public class AppLikeProxyClassCreator {
         sb.append("  }\n\n");
 
         //onCreate()方法
-        sb.append("  public void onCreate(Context context) {\n");
-        sb.append("    mAppLike.onCreate(context);\n");
+        sb.append("  public void onCreate() {\n");
+        sb.append("    mAppLike.onCreate();\n");
         sb.append("  }\n\n");
 
         //getPriority()方法

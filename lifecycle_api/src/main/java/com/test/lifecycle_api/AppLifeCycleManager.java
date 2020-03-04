@@ -70,15 +70,15 @@ public class AppLifeCycleManager {
         loadAppLike();
 
         if (REGISTER_BY_PLUGIN) {
-            LogUtils.i("通过插件在家IAppLike类");
+            LogUtils.i("通过插件再加载IAppLike类");
         }
-        scanClassFile(context);
+        //scanClassFile(context);
 
         //根据优先级排序
         Collections.sort(appLikeList, new AppLikeComparator());
 
         for (IAppLike appLike : appLikeList) {
-            appLike.onCreate(context);
+            appLike.onCreate();
         }
     }
 

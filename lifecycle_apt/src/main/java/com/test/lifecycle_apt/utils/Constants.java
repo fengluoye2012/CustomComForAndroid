@@ -23,6 +23,11 @@ public class Constants {
      */
     public static final String ANNOTATION_TYPE_ROUTE = ANNOTATION_PKG + ".RouteNode";
 
+    /**
+     *
+     */
+    public static final String ANNOTATION_TYPE_AUTO_WIRED = ANNOTATION_PKG + ".AutoWired";
+
 
     /**
      * 日志前缀
