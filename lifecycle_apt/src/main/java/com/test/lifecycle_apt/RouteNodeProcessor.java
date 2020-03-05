@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.test.lifecycle_annotation.AutoWired;
 import com.test.lifecycle_annotation.RouteNode;
@@ -115,7 +116,7 @@ public class RouteNodeProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
-        if (set == null) {
+        if (set == null || set.isEmpty()) {
             return false;
         }
 
@@ -205,15 +206,21 @@ public class RouteNodeProcessor extends AbstractProcessor {
         MethodSpec hostMethod = generateGetHostMethod();
         MethodSpec initMapMethod = generateInitMapMethod();
 
+
+        TypeSpec classSpec = TypeSpec.classBuilder(simpleName)
+                .addModifiers(Modifier.PUBLIC) //类的访问修饰符
+                .superclass(supperClass) //超类
+                .addMethod(hostMethod) //添加方法
+                .addMethod(initMapMethod) //添加方法
+                .build();
+
         //创建类
         try {
-            JavaFile.builder(pkgName, TypeSpec.classBuilder(simpleName)
-                    .addModifiers(Modifier.PUBLIC) //类的访问修饰符
-                    .superclass(supperClass) //超类
-                    .addMethod(hostMethod) //添加方法
-                    .addMethod(initMapMethod) //添加方法
-                    .build()
-            ).build().writeTo(filer);
+            JavaFile javaFile = JavaFile.builder(pkgName, classSpec).build();
+
+            //logger.info(javaFile.toString());
+            javaFile.writeTo(filer);
+
         } catch (IOException e) {
             logger.error(e);
         }
@@ -228,6 +235,12 @@ public class RouteNodeProcessor extends AbstractProcessor {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("auto generated, do not change !!!! \n\n");
             stringBuilder.append("HOST : " + host + "\n\n");
+
+            if (routeNodes != null && routeNodes.size() > 0) {
+                logger.info("routeNodes size is " + routeNodes.size());
+            } else {
+                logger.info("routeNodes size is " + 0);
+            }
 
             for (Node node : routeNodes) {
                 stringBuilder.append(node.getDesc() + "\n");
@@ -268,12 +281,14 @@ public class RouteNodeProcessor extends AbstractProcessor {
      * 生成getHost方法
      */
     private MethodSpec generateGetHostMethod() {
+        TypeName returnType = TypeName.get(typeString);
+
         return MethodSpec.methodBuilder("getHost")//方法名称
                 //.addParameter(String.class,"") //添加参数
                 .addAnnotation(Override.class)//添加Override 注解
                 .addModifiers(Modifier.PUBLIC)//添加访问
-                .returns(String.class) //返回值
-                .addStatement("return %S", host)//添加代码
+                .returns(returnType) //返回值
+                .addStatement("return $S", host)//添加代码
                 .build();
     }
 
@@ -282,15 +297,17 @@ public class RouteNodeProcessor extends AbstractProcessor {
      */
     private MethodSpec generateInitMapMethod() {
 
+        TypeName returnType = TypeName.VOID;
+
         MethodSpec.Builder builder = MethodSpec.methodBuilder("initMap")//方法名称
                 //.addParameter(String.class,"") //添加参数
                 .addAnnotation(Override.class)//添加Override 注解
                 .addModifiers(Modifier.PUBLIC)//添加访问
-                .returns(Void.class) //返回值
+                .returns(returnType) //返回值
                 .addStatement("super.initMap()");//添加代码
 
         for (Node node : routeNodes) {
-            builder.addStatement(Constants.ROUTE_MAPPER_FIELD_NAME + ".put($S，$T.class)", node.getPath(),
+            builder.addStatement(Constants.ROUTE_MAPPER_FIELD_NAME + ".put($S,$T.class)", node.getPath(),
                     ClassName.get((TypeElement) node.getRawType()));
 
             StringBuilder mapBodyBuilder = new StringBuilder();

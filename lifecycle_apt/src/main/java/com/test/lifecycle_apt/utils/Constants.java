@@ -58,12 +58,12 @@ public class Constants {
     /**
      * 路由跳转基类
      */
-    public static final String BASE_COMP_ROUTER = "com.test.lifecycle_api.router.ui.BaseCompRouter";
+    public static final String BASE_COMP_ROUTER = "com.test.lifecycle_api.router.ui.BaseComRouter";
 
     /**
      * BaseCompRouter 中的Map 字段
      */
-    public static final String ROUTE_MAPPER_FIELD_NAME = "routeMapper";
+    public static final String ROUTE_MAPPER_FIELD_NAME = "routerMapper";
     public static final String PARAMS_MAPPER_FIELD_NAME = "paramsMapper";
 
 }

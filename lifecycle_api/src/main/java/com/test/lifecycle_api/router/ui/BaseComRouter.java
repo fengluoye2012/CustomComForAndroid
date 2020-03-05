@@ -99,7 +99,12 @@ public abstract class BaseComRouter implements IComponentRouter {
                 ((Activity) context).startActivityForResult(intent, requestCode);
                 return true;
             }
-            context.startActivity(intent);
+            if (context instanceof Activity) {
+                context.startActivity(intent);
+            } else {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
             return true;
         }
         return false;

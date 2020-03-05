@@ -1,6 +1,6 @@
 package com.test.lifecycle_apt.demo;
 
-//public class KotlinUiRouter extends BaseCompRouter {
+//public class KotlinUiRouter extends BaseComRouter {
 //    @Override
 //    public String getHost() {
 //        return "kotlin";
