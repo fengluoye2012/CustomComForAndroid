@@ -70,6 +70,9 @@ public class RouteNodeProcessor extends AbstractProcessor {
     private Logger logger;
     private Types types;
     private TypeUtils typeUtils;
+    /**
+     * String 类型
+     */
     private TypeMirror typeString;
     private String host;
 
@@ -93,6 +96,7 @@ public class RouteNodeProcessor extends AbstractProcessor {
         typeUtils = new TypeUtils(types, elementUtils);
         typeString = elementUtils.getTypeElement("java.lang.String").asType();
 
+        //可以在对应的module中的build.gradle中配置javaCompileOptions。
         Map<String, String> options = processingEnv.getOptions();
         if (options != null) {
             host = options.get(Constants.KEY_HOST_NAME);
@@ -136,6 +140,11 @@ public class RouteNodeProcessor extends AbstractProcessor {
         return true;
     }
 
+    /**
+     * 解析路由
+     *
+     * @param elements
+     */
     private void parseRouteNodes(Set<? extends Element> elements) {
 
         //返回给定类型，并返回该元素的定义类型
@@ -148,43 +157,44 @@ public class RouteNodeProcessor extends AbstractProcessor {
             //获取注解，然后可以获取注解中的参数
             RouteNode routeNode = element.getAnnotation(RouteNode.class);
 
-            //判断t1是否作为t2的子类
-            if (types.isSubtype(tm, typeActivity)) {
-                logger.info("Found activity route is " + tm.toString());
-                Node node = new Node();
-                String path = routeNode.path();
-                checkPath(path);
-
-                node.setPath(path);
-                node.setDesc(routeNode.desc());
-                node.setPriority(routeNode.priority());
-                node.setNodeType(NodeType.ACTIVITY);
-                node.setRawType(element);
-
-                Map<String, Integer> paramsType = new HashMap<>();
-                Map<String, String> paramsDesc = new HashMap<>();
-
-                //遍历所有的成员变量
-                for (Element field : element.getEnclosedElements()) {
-                    //判断是否为成员变量类型，并且是否添加了{@link AutoWired} 注解
-                    if (field.getKind().isField() && field.getAnnotation(AutoWired.class) != null) {
-                        //获取成员变量的注解，可以获取参数的值
-                        AutoWired paramConfig = field.getAnnotation(AutoWired.class);
-                        paramsType.put(StringUtils.isEmpty(paramConfig.name())
-                                ? field.getSimpleName().toString() : paramConfig.name(), typeUtils.typeExchange(field));
-
-                        paramsDesc.put(StringUtils.isEmpty(paramConfig.name()) ? field.getSimpleName().toString() :
-                                paramConfig.name(), typeUtils.typeDesc(field));
-                    }
-                }
-                node.setParamsType(paramsType);
-                node.setParamsDesc(paramsDesc);
-
-                if (!routeNodes.contains(node)) {
-                    routeNodes.add(node);
-                }
-            } else {
+            //判断t1是否作为t2的子类, RouteNode 注解只能用在Activity;
+            if (!types.isSubtype(tm, typeActivity)) {
                 throw new IllegalStateException("only activity can be annotated by RouteNode");
+            }
+
+            logger.info("Found activity route is " + tm.toString());
+            Node node = new Node();
+            String path = routeNode.path();
+            checkPath(path);
+
+            node.setPath(path);
+            node.setDesc(routeNode.desc());
+            node.setPriority(routeNode.priority());
+            node.setNodeType(NodeType.ACTIVITY);
+            node.setRawType(element);
+
+            //字段对应的类型，类型用数字来表示
+            Map<String, Integer> paramsType = new HashMap<>();
+            Map<String, String> paramsDesc = new HashMap<>();
+
+            //遍历所有的成员变量
+            for (Element field : element.getEnclosedElements()) {
+                //判断是否为成员变量类型，并且是否添加了{@link AutoWired} 注解
+                if (field.getKind().isField() && field.getAnnotation(AutoWired.class) != null) {
+                    //获取成员变量的注解，可以获取参数的值
+                    AutoWired paramConfig = field.getAnnotation(AutoWired.class);
+                    paramsType.put(StringUtils.isEmpty(paramConfig.name())
+                            ? field.getSimpleName().toString() : paramConfig.name(), typeUtils.typeExchange(field));
+
+                    paramsDesc.put(StringUtils.isEmpty(paramConfig.name()) ? field.getSimpleName().toString() :
+                            paramConfig.name(), typeUtils.typeDesc(field));
+                }
+            }
+            node.setParamsType(paramsType);
+            node.setParamsDesc(paramsDesc);
+
+            if (!routeNodes.contains(node)) {
+                routeNodes.add(node);
             }
         }
     }

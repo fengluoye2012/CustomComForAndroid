@@ -31,7 +31,7 @@ public class TypeUtils {
 
 
     /**
-     * 类型转换
+     * 类型对应关系
      *
      * @param element
      * @return
@@ -73,7 +73,7 @@ public class TypeUtils {
     }
 
     /**
-     * DESC of type
+     * 获取路由跳转参数对应的类型描述
      *
      * @param element Raw type
      * @return Type class of java

@@ -39,8 +39,7 @@ public class FileUtils {
     public static void writeStringToFile(String fileName, String content, boolean append) {
         BufferedWriter out = null;
         try {
-            out = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(fileName, append), "UTF-8"));
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName, append), "UTF-8"));
             out.write(content);
         } catch (Exception e) {
             e.printStackTrace();
