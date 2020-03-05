@@ -27,6 +27,7 @@ buildscript {
             ],
             'gradlePlugin'     : 'com.android.tools.build:gradle:${versions.gradle}',
             'util'             : 'com.blankj:utilcodex:1.26.0',
+            'gson'                : 'com.google.code.gson:gson:2.8.2',
     ]
 
 

@@ -2,21 +2,21 @@ package com.test.lifecycle_apt;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.test.lifecycle_annotation.AutoWired;
-import com.test.lifecycle_annotation.RouteNode;
-import com.test.lifecycle_annotation.enums.NodeType;
-import com.test.lifecycle_annotation.model.Node;
-import com.test.lifecycle_annotation.utils.RouterUtils;
+import com.test.lifecycle_annotation.enums.Type;
 import com.test.lifecycle_apt.utils.Constants;
-import com.test.lifecycle_apt.utils.FileUtils;
 import com.test.lifecycle_apt.utils.Logger;
-import com.test.lifecycle_apt.utils.StringUtils;
 import com.test.lifecycle_apt.utils.TypeUtils;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,8 +57,6 @@ public class AutoWiredProcessor extends AbstractProcessor {
     //用于文件处理
     private Filer filer;
 
-    private List<Node> routeNodes;
-
     /**
      * 用于打印日志，简单将getMessager()封装
      * <p>
@@ -67,8 +65,13 @@ public class AutoWiredProcessor extends AbstractProcessor {
     private Logger logger;
     private Types types;
     private TypeUtils typeUtils;
-    private TypeMirror typeString;
-    private String host;
+    private String TAG = AutoWiredProcessor.class.getSimpleName();
+
+    private Map<TypeElement, List<Element>> parentAndChild = new HashMap<>();
+
+    private static final ClassName AndroidLog = ClassName.get("android.util", "Log");
+
+    private static final ClassName NullPointerException = ClassName.get("java.lang", "NullPointerException");
 
     /**
      * 初始化方法会被注解处理工具调用，并传入参数processingEnvironment，该参数提供了很多有用的工具类，
@@ -80,26 +83,14 @@ public class AutoWiredProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
 
-        routeNodes = new ArrayList<>();
-
         types = processingEnv.getTypeUtils();
         elementUtils = processingEnv.getElementUtils();
         filer = processingEnv.getFiler();
         logger = new Logger(processingEnv.getMessager());
 
         typeUtils = new TypeUtils(types, elementUtils);
-        typeString = elementUtils.getTypeElement("java.lang.String").asType();
 
-        Map<String, String> options = processingEnv.getOptions();
-        if (options != null) {
-            host = options.get(Constants.KEY_HOST_NAME);
-            logger.info("host is " + host);
-        }
-
-        if (host == null || Constants.STRING_EMPTY.equals(host)) {
-            host = Constants.DEFAULT_HOST;
-        }
-        logger.info("RouteNodeProcessor init ");
+        logger.info("AutoWiredProcessor init ");
     }
 
 
@@ -113,202 +104,206 @@ public class AutoWiredProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
-        if (set == null) {
+        if (CollectionUtils.isEmpty(set)) {
             return false;
         }
 
-        //这里返回所有使用了RouteNode 注解的元素
-//        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(RouteNode.class);
-//
-//        try {
-//            logger.info("Found routes start");
-//            parseRouteNodes(elements);
-//        } catch (Exception e) {
-//            logger.error(e);
-//        }
-//
-//        generateRouterImpl();
-//        generateRouterTable();
+        //这里返回所有使用了AutoWired 注解的元素
+        Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(AutoWired.class);
+        categories(elements);
+
+        try {
+            generateHelper();
+        } catch (Exception e) {
+            logger.error(e);
+        }
 
         return true;
     }
 
-    private void parseRouteNodes(Set<? extends Element> elements) {
-
-        //返回给定类型，并返回该元素的定义类型
-        TypeMirror typeActivity = elementUtils.getTypeElement(Constants.ACTIVITY).asType();
-
-        //遍历所有使用了该注解的元素
-        for (Element element : elements) {
-            //返回该元素的定义类型
-            TypeMirror tm = element.asType();
-            //获取注解，然后可以获取注解中的参数
-            RouteNode routeNode = element.getAnnotation(RouteNode.class);
-
-            //判断t1是否作为t2的子类
-            if (types.isSubtype(tm, typeActivity)) {
-                logger.info("Found activity route is " + tm.toString());
-                Node node = new Node();
-                String path = routeNode.path();
-                checkPath(path);
-
-                node.setPath(path);
-                node.setDesc(routeNode.desc());
-                node.setPriority(routeNode.priority());
-                node.setNodeType(NodeType.ACTIVITY);
-                node.setRawType(element);
-
-                Map<String, Integer> paramsType = new HashMap<>();
-                Map<String, String> paramsDesc = new HashMap<>();
-
-                //遍历所有的成员变量
-                for (Element field : element.getEnclosedElements()) {
-                    //判断是否为成员变量类型，并且是否添加了{@link AutoWired} 注解
-                    if (field.getKind().isField() && field.getAnnotation(AutoWired.class) != null) {
-                        //获取成员变量的注解，可以获取参数的值
-                        AutoWired paramConfig = field.getAnnotation(AutoWired.class);
-                        paramsType.put(StringUtils.isEmpty(paramConfig.name())
-                                ? field.getSimpleName().toString() : paramConfig.name(), typeUtils.typeExchange(field));
-
-                        paramsDesc.put(StringUtils.isEmpty(paramConfig.name()) ? field.getSimpleName().toString() :
-                                paramConfig.name(), typeUtils.typeDesc(field));
-                    }
-                }
-                node.setParamsType(paramsType);
-                node.setParamsDesc(paramsDesc);
-
-                if (!routeNodes.contains(node)) {
-                    routeNodes.add(node);
-                }
-            } else {
-                throw new IllegalStateException("only activity can be annotated by RouteNode");
-            }
-        }
-    }
-
-
     /**
-     * 通过javapoet 生成Java 文件，如KotlinUiRouter.java
-     */
-    private void generateRouterImpl() {
-        //全类名
-        String className = RouterUtils.genHostUIRouterClass(host);
-
-        String pkgName = className.substring(0, className.lastIndexOf(RouterUtils.DOT));
-
-        String simpleName = className.substring(className.lastIndexOf(RouterUtils.DOT) + 1);
-
-        ClassName supperClass = ClassName.get(elementUtils.getTypeElement(Constants.BASE_COMP_ROUTER));
-
-        MethodSpec hostMethod = generateGetHostMethod();
-        MethodSpec initMapMethod = generateInitMapMethod();
-
-        //创建类
-        try {
-            JavaFile.builder(pkgName, TypeSpec.classBuilder(simpleName)
-                    .addModifiers(Modifier.PUBLIC) //类的访问修饰符
-                    .superclass(supperClass) //超类
-                    .addMethod(hostMethod) //添加方法
-                    .addMethod(initMapMethod) //添加方法
-                    .build()
-            ).build().writeTo(filer);
-        } catch (IOException e) {
-            logger.error(e);
-        }
-    }
-
-    /**
-     * generate HostRouterTable.txt
-     */
-    private void generateRouterTable() {
-        String fileName = RouterUtils.genRouterTable(host);
-        if (FileUtils.createFile(fileName)) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("auto generated, do not change !!!! \n\n");
-            stringBuilder.append("HOST : " + host + "\n\n");
-
-            for (Node node : routeNodes) {
-                stringBuilder.append(node.getDesc() + "\n");
-                stringBuilder.append(node.getPath() + "\n");
-                Map<String, String> paramsType = node.getParamsDesc();
-                if (MapUtils.isNotEmpty(paramsType)) {
-                    for (Map.Entry<String, String> types : paramsType.entrySet()) {
-                        stringBuilder.append(types.getKey() + ":" + types.getValue() + "\n");
-                    }
-                }
-                stringBuilder.append("\n");
-            }
-            FileUtils.writeStringToFile(fileName, stringBuilder.toString(), false);
-        }
-    }
-
-
-    /**
-     * path 校验
+     * 将所有添加了注解的成员变量 找到对应的类
      *
-     * @param path
+     * @param elements
      */
-    private void checkPath(String path) {
-        if (path == null || path.isEmpty() || !path.startsWith("/")) {
-            throw new IllegalStateException("path cannot be null or empty and should start with /,this is " + path);
+    private void categories(Set<? extends Element> elements) {
+        if (CollectionUtils.isEmpty(elements)) {
+            return;
         }
 
-        if (path.contains("//") || path.contains("&") || path.contains("?")) {
-            throw new IllegalArgumentException("path should not contain // ,& or ?,this is:" + path);
-        }
+        for (Element element : elements) {
+            TypeElement enclosingElement = (TypeElement) (element).getEnclosingElement();
 
-        if (path.endsWith("/"))
-            throw new IllegalArgumentException("path should not endWith /,this is:" + path + ";or append a token:index");
+            //变量的修饰符包含private
+            if (element.getModifiers().contains(Modifier.PRIVATE)) {
+                throw new IllegalStateException("The AutoWired fields CAN NOT BE 'private'!!! please check field ["
+                        + element.getSimpleName() + "] in class [" + enclosingElement.getQualifiedName() + "]");
+            }
+
+            if (parentAndChild.containsKey(enclosingElement)) {
+                parentAndChild.get(enclosingElement).add(element);
+            } else {
+                List<Element> children = new ArrayList<>();
+                children.add(element);
+                parentAndChild.put(enclosingElement, children);
+            }
+        }
     }
 
 
     /**
-     * 生成getHost方法
+     * 利用javapeot 生成java类
      */
-    private MethodSpec generateGetHostMethod() {
-        return MethodSpec.methodBuilder("getHost")//方法名称
-                //.addParameter(String.class,"") //添加参数
-                .addAnnotation(Override.class)//添加Override 注解
-                .addModifiers(Modifier.PUBLIC)//添加访问
-                .returns(String.class) //返回值
-                .addStatement("return %S", host)//添加代码
-                .build();
-    }
+    private void generateHelper() throws IllegalAccessException, IOException {
+        TypeElement typeISyringe = elementUtils.getTypeElement(Constants.ISYRINGE);
+        TypeElement typeJsonService = elementUtils.getTypeElement(Constants.JSON_SERVICE);
 
-    /**
-     * 生成initMap 方法
-     */
-    private MethodSpec generateInitMapMethod() {
+        TypeMirror activityTm = elementUtils.getTypeElement(Constants.ACTIVITY).asType();
+        TypeMirror fragmentTm = elementUtils.getTypeElement(Constants.FRAGMENT).asType();
+        TypeMirror fragmentV4Tm = elementUtils.getTypeElement(Constants.FRAGMENT_V4).asType();
 
-        MethodSpec.Builder builder = MethodSpec.methodBuilder("initMap")//方法名称
-                //.addParameter(String.class,"") //添加参数
-                .addAnnotation(Override.class)//添加Override 注解
-                .addModifiers(Modifier.PUBLIC)//添加访问
-                .returns(Void.class) //返回值
-                .addStatement("super.initMap()");//添加代码
+        //方法参数
+        ParameterSpec objParamSpec = ParameterSpec.builder(TypeName.OBJECT, "target").build();
 
-        for (Node node : routeNodes) {
-            builder.addStatement(Constants.ROUTE_MAPPER_FIELD_NAME + ".put($S，$T.class)", node.getPath(),
-                    ClassName.get((TypeElement) node.getRawType()));
+        if (MapUtils.isEmpty(parentAndChild)) {
+            return;
+        }
 
-            StringBuilder mapBodyBuilder = new StringBuilder();
-            Map<String, Integer> paramsType = node.getParamsType();
-            if (MapUtils.isNotEmpty(paramsType)) {
-                Set<Map.Entry<String, Integer>> entries = paramsType.entrySet();
-                for (Map.Entry<String, Integer> entry : entries) {
-                    mapBodyBuilder.append("put(").append(entry.getKey()).append(", ").append(entry.getValue()).append(");");
+        Set<Map.Entry<TypeElement, List<Element>>> entries = parentAndChild.entrySet();
+        for (Map.Entry<TypeElement, List<Element>> entry : entries) {
+
+            MethodSpec.Builder injectMethod = initInjectMethod();
+
+            TypeElement parent = entry.getKey();
+            List<Element> children = entry.getValue();
+
+            String qualifiedName = parent.getQualifiedName().toString();
+            String pkgName = qualifiedName.substring(0, qualifiedName.lastIndexOf(Constants.DOT));
+
+            String fileName = parent.getSimpleName() + Constants.SUFFIX_AUTO_WIRED;
+            logger.info("start process " + children.size() + " filed in " + parent.getSimpleName());
+
+            //成员变量
+            FieldSpec.Builder jsonServiceField = FieldSpec.builder(TypeName.get(typeJsonService.asType()), "jsonService", Modifier.PRIVATE);
+
+            //类的信息
+            TypeSpec.Builder helper = TypeSpec.classBuilder(fileName)//类名
+                    .addJavadoc("Auto generate by " + TAG)//注释
+                    .addModifiers(Modifier.PUBLIC)
+                    .addSuperinterface(ClassName.get(typeISyringe));
+
+
+            //方法中添加
+            injectMethod.addStatement("jsonService = $T.Factory.getInstance().create();", ClassName.get(typeJsonService));
+            injectMethod.addStatement("$T substitute = ($T)target;", ClassName.get(parent), ClassName.get(parent));
+
+            for (Element element : children) {
+                AutoWired fieldConfig = element.getAnnotation(AutoWired.class);
+                String fieldName = element.getSimpleName().toString();
+
+                String originalValue = "substitute." + fieldName;
+                String statment = "substitute." + fieldName + " = substitute.";
+
+                boolean isActivity = false;
+                if (types.isSubtype(parent.asType(), activityTm)) {
+                    isActivity = true;
+                    statment += "getIntent().";
+                } else if (types.isSubtype(parent.asType(), fragmentTm) || types.isSubtype(parent.asType(), fragmentV4Tm)) {
+                    statment += "getArguments().";
+                } else {
+                    throw new IllegalAccessException("The field [" + fieldName + "] need " +
+                            "AutoWired from intent, its parent must be activity or fragment!");
+                }
+
+                statment = buildStatement(originalValue, statment, typeUtils.typeExchange(element), isActivity);
+
+                if (statment.startsWith("jsonService.")) {   // Not mortals
+                    injectMethod.beginControlFlow("if (null != jsonService)");
+                    injectMethod.addStatement(
+                            "substitute." + fieldName + " = " + statment,
+                            (StringUtils.isEmpty(fieldConfig.name()) ? fieldName : fieldConfig.name()),
+                            ClassName.get(element.asType())
+                    );
+                    injectMethod.nextControlFlow("else");
+                    injectMethod.addStatement(
+                            "$T.e(\"" + TAG + "\", \"You want automatic inject the field '"
+                                    + fieldName + "' in class '$T' ," +
+                                    " but JsonService not found in Router\")", AndroidLog, ClassName.get(parent));
+
+                    injectMethod.endControlFlow();
+                } else {
+                    injectMethod.addStatement(statment, StringUtils.isEmpty(fieldConfig.name()) ? fieldName : fieldConfig.name());
+                }
+
+
+                // Validator
+                if (fieldConfig.required() && !element.asType().getKind().isPrimitive()) {  // Primitive wont be check.
+                    injectMethod.beginControlFlow("if (null == substitute." + fieldName + ")");
+                    injectMethod.addStatement(
+                            "$T.e(\"" + TAG + "\", \"The field '" + fieldName + "' is null," + "field description is:" + fieldConfig.desc() +
+                                    ",in class '\" + $T.class.getName() + \"!\")", AndroidLog, ClassName.get(parent));
+
+                    if (fieldConfig.throwOnNull()) {
+                        injectMethod.addStatement("throw new $T(" +
+                                "\"The field '" + fieldName + "' is null," + "field description is:" + fieldConfig.desc() +
+                                ",in class '\" + $T.class.getName() + \"!\")", NullPointerException, ClassName.get(parent));
+                    }
+
+                    injectMethod.endControlFlow();
                 }
             }
+            helper.addMethod(injectMethod.build());
 
-            String mapBody = mapBodyBuilder.toString();
-            logger.info("mapBody is " + mapBody);
+            // Generate autowire helper
+            JavaFile.builder(pkgName, helper.build()).build().writeTo(filer);
 
-            if (!StringUtils.isEmpty(mapBody)) {
-                builder.addStatement(
-                        Constants.PARAMS_MAPPER_FIELD_NAME + ".put($T.class,new java.util.HashMap<String,Integer>(){{" +
-                                mapBody + "}})", ClassName.get((TypeElement) node.getRawType()));
-            }
+            logger.info(">>> " + parent.getSimpleName() + " has been processed, " + fileName + " has been generated. <<<");
         }
-        return builder.build();
+
+        logger.info(">>> Autowired processor stop. <<<");
+    }
+
+
+    private MethodSpec.Builder initInjectMethod() {
+        MethodSpec.Builder injectMethod = MethodSpec.methodBuilder("inject")
+                .addParameter(ParameterSpec.builder(TypeName.OBJECT, "target").build()) //参数
+                .addAnnotation(Override.class) //添加注解
+                .addModifiers(Modifier.PUBLIC)
+                .returns(void.class);//添加返回值
+
+        return injectMethod;
+    }
+
+    /**
+     * Activity、Fragment 接受Intent 参数
+     */
+    private String buildStatement(String originalValue, String statement, int type, boolean isActivity) {
+        if (type == Type.BOOLEAN.ordinal()) {
+            statement += (isActivity ? ("getBooleanExtra($S, " + originalValue + ")") : ("getBoolean($S)"));
+        } else if (type == Type.BYTE.ordinal()) {
+            statement += (isActivity ? ("getByteExtra($S, " + originalValue + ")") : ("getByte($S)"));
+        } else if (type == Type.SHORT.ordinal()) {
+            statement += (isActivity ? ("getShortExtra($S, " + originalValue + ")") : ("getShort($S)"));
+        } else if (type == Type.INT.ordinal()) {
+            statement += (isActivity ? ("getIntExtra($S, " + originalValue + ")") : ("getInt($S)"));
+        } else if (type == Type.LONG.ordinal()) {
+            statement += (isActivity ? ("getLongExtra($S, " + originalValue + ")") : ("getLong($S)"));
+        } else if (type == Type.CHAR.ordinal()) {
+            statement += (isActivity ? ("getCharExtra($S, " + originalValue + ")") : ("getChar($S)"));
+        } else if (type == Type.FLOAT.ordinal()) {
+            statement += (isActivity ? ("getFloatExtra($S, " + originalValue + ")") : ("getFloat($S)"));
+        } else if (type == Type.DOUBLE.ordinal()) {
+            statement += (isActivity ? ("getDoubleExtra($S, " + originalValue + ")") : ("getDouble($S)"));
+        } else if (type == Type.STRING.ordinal()) {
+            statement += (isActivity ? ("getStringExtra($S)") : ("getString($S)"));
+        } else if (type == Type.PARCELABLE.ordinal()) {
+            statement += (isActivity ? ("getParcelableExtra($S)") : ("getParcelable($S)"));
+        } else if (type == Type.OBJECT.ordinal()) {
+            statement = "jsonService.parseObject(substitute." +
+                    (isActivity ? "getIntent()." : "getArguments().") +
+                    (isActivity ? "getStringExtra($S)" : "getString($S)") + ", $T.class)";
+        }
+
+        return statement;
     }
 }

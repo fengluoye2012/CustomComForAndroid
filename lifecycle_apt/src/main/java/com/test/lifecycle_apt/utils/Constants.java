@@ -55,6 +55,9 @@ public class Constants {
     public static final String STRING = LANG + ".String";
 
 
+    public static final String ISYRINGE = "com.test.lifecycle_api.router.ISyringe";
+    public static final String JSON_SERVICE = "com.test.lifecycle_api.service.JsonService";
+
     /**
      * 路由跳转基类
      */
@@ -65,5 +68,9 @@ public class Constants {
      */
     public static final String ROUTE_MAPPER_FIELD_NAME = "routerMapper";
     public static final String PARAMS_MAPPER_FIELD_NAME = "paramsMapper";
+
+    //点
+    public static final String DOT = ".";
+    public static final String SUFFIX_AUTO_WIRED = "$$Router$$AutoWired";
 
 }

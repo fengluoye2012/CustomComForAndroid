@@ -29,6 +29,7 @@ dependencies {
     androidTestImplementation deps.test.runner
     androidTestImplementation deps.test.espresso
     api deps.util
+    api deps.gson
 
     api project(':lifecycle_annotation')
 
