@@ -1,13 +1,12 @@
 package com.test.gradle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
+import com.test.baselibrary.base.BaseActivity;
 import com.test.lifecycle_annotation.RouteNode;
 
 @RouteNode(path = "/main/DetailActivity", desc = "详情页")
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -4,13 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.test.baselibrary.base.BaseActivity;
 import com.test.componentservice.module.test.TestUIRouterHelper;
 import com.test.lifecycle_annotation.RouteNode;
 
 @RouteNode(path = "/main/MainActivity", desc = "主界面")
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TestUIRouterHelper.startTestActivity(getBaseContext());
+                TestUIRouterHelper.startTestActivity(getBaseContext(),"main");
             }
         });
     }

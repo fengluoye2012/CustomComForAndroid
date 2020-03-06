@@ -35,13 +35,14 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 /**
- * 实现注解处理器
+ * 通过AutoWired 注解获取所有在Activity、Fragment中使用注解的成员变量，然后getEnclosingElement()获取所在的封装元素(所在的类中)。
  * <p>
  * 核心的注解处理类，在这里我们可以扫描源代码里所有的注解，找到我们需要的注解，然后作出相应处理
  * <p>
@@ -67,6 +68,10 @@ public class AutoWiredProcessor extends AbstractProcessor {
     private TypeUtils typeUtils;
     private String TAG = AutoWiredProcessor.class.getSimpleName();
 
+    /**
+     * TypeElement 表示当前Activity、Fragment
+     * List<Element> 表示当前Activity、Fragment中的所有使用AutoWired 注解的成员变量
+     */
     private Map<TypeElement, List<Element>> parentAndChild = new HashMap<>();
 
     private static final ClassName AndroidLog = ClassName.get("android.util", "Log");
@@ -132,7 +137,10 @@ public class AutoWiredProcessor extends AbstractProcessor {
         }
 
         for (Element element : elements) {
+            //返回 封装元素；如果没有，则返回 null
             TypeElement enclosingElement = (TypeElement) (element).getEnclosingElement();
+            Name qualifiedName = enclosingElement.getQualifiedName();
+            logger.info(element.getSimpleName() + " 所在的环境 is" + qualifiedName);
 
             //变量的修饰符包含private
             if (element.getModifiers().contains(Modifier.PRIVATE)) {
@@ -184,11 +192,12 @@ public class AutoWiredProcessor extends AbstractProcessor {
             logger.info("start process " + children.size() + " filed in " + parent.getSimpleName());
 
             //成员变量
-            FieldSpec.Builder jsonServiceField = FieldSpec.builder(TypeName.get(typeJsonService.asType()), "jsonService", Modifier.PRIVATE);
+            FieldSpec jsonServiceField = FieldSpec.builder(TypeName.get(typeJsonService.asType()), "jsonService", Modifier.PRIVATE).build();
 
             //类的信息
             TypeSpec.Builder helper = TypeSpec.classBuilder(fileName)//类名
                     .addJavadoc("Auto generate by " + TAG)//注释
+                    .addField(jsonServiceField) //添加成员变量
                     .addModifiers(Modifier.PUBLIC)
                     .addSuperinterface(ClassName.get(typeISyringe));
 

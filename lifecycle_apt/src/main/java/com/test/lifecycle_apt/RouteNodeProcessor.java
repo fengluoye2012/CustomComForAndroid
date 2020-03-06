@@ -325,7 +325,7 @@ public class RouteNodeProcessor extends AbstractProcessor {
             if (MapUtils.isNotEmpty(paramsType)) {
                 Set<Map.Entry<String, Integer>> entries = paramsType.entrySet();
                 for (Map.Entry<String, Integer> entry : entries) {
-                    mapBodyBuilder.append("put(").append(entry.getKey()).append(", ").append(entry.getValue()).append(");");
+                    mapBodyBuilder.append("put(\"").append(entry.getKey()).append("\", ").append(entry.getValue()).append(");");
                 }
             }
 
