@@ -31,8 +31,10 @@ import javax.tools.JavaFileObject;
  * 核心的注解处理类，在这里我们可以扫描源代码里所有的注解，找到我们需要的注解，然后作出相应处理
  * <p>
  * AutoService本身就是一个静态注解，在build/META-INF文件夹下生成了一个service指定文件
+ *
+ * 目前使用javassist 方式  不需要生成代理类
  */
-@AutoService(Processor.class)
+//@AutoService(Processor.class)
 public class AppLikeProcessor extends AbstractProcessor {
 
     private String TAG = AppLikeProcessor.class.getSimpleName();

@@ -32,4 +32,12 @@ class Config {
     public static final String RELEASE_COMPONENT = "compileComponent"
 
 
+    public static final String DOT = "."
+    public static final String DOT_CLASS = ".class"
+    /**
+     * IAppLike 全类名
+     */
+    public static final String IAPPLIKE_FULL_NAME = "com.test.lifecycle_api.IAppLike"
+
+
 }

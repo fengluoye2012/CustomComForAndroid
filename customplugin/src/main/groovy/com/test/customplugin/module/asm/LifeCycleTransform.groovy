@@ -1,4 +1,4 @@
-package com.test.customplugin.module
+package com.test.customplugin.module.asm
 
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager

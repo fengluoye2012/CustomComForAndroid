@@ -9,6 +9,7 @@ dependencies {
     implementation localGroovy()
     //build tools
     implementation 'com.android.tools.build:gradle:3.4.1'
+
     //transform
     implementation 'com.android.tools.build:transform-api:1.5.0'
 

@@ -1,4 +1,4 @@
-package com.test.customplugin.module
+package com.test.customplugin.module.asm
 
 import java.util.jar.JarEntry
 import java.util.jar.JarFile

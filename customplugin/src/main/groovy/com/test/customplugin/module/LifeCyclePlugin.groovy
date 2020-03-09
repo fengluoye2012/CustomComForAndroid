@@ -2,6 +2,7 @@ package com.test.customplugin.module
 
 import com.android.build.gradle.AppExtension
 import com.test.customplugin.module.exten.ComExtension
+import com.test.customplugin.module.javassist.ComCodeTransform
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -16,7 +17,6 @@ class LifeCyclePlugin implements Plugin<Project> {
     void apply(Project project) {
         println("---- LifeCycle plugin entrance ----")
         gradleConfigDeal(project)
-
     }
 
 
@@ -88,7 +88,7 @@ class LifeCyclePlugin implements Plugin<Project> {
                 //可以用 project.android 代替 project.getExtensions().getByType(AppExtension)
                 def android = project.getExtensions().getByType(AppExtension)
                 //在插件中注册该Transform
-                android.registerTransform(new LifeCycleTransform(project))
+                android.registerTransform(new ComCodeTransform(project))
             }
         } else {
             project.apply plugin: 'com.android.library'

@@ -1,4 +1,5 @@
-package com.test.customplugin.module
+package com.test.customplugin.module.asm
+
 
 import jdk.internal.org.objectweb.asm.*
 import jdk.internal.org.objectweb.asm.commons.AdviceAdapter
