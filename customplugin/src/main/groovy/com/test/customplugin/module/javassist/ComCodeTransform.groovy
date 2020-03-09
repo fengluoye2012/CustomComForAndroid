@@ -81,6 +81,7 @@ class ComCodeTransform extends Transform {
 
         def android = project.extensions.getByType(AppExtension)
         android.bootClasspath.each {
+            //添加搜索路径，可以搜索当前路径下所有的class 文件
             classPool.appendClassPath((String) it.absolutePath)
         }
         def box = ConvertUtils.toCtClass(inputs, classPool)
@@ -114,8 +115,9 @@ class ComCodeTransform extends Transform {
         inputs.each { TransformInput input ->
             //1.遍历所有的class文件目录
             input.directoryInputs.each { DirectoryInput directoryInput ->
-
+                //是否自动注册
                 boolean isRegisterCompoAuto = project.extensions.comBuild.isRegisterCompoAuto
+                //自动注册，找到Application 并在onCreate()插入代码
                 if (isRegisterCompoAuto) {
                     String fileName = directoryInput.file.absolutePath
                     File dir = new File(fileName)
@@ -192,7 +194,7 @@ class ComCodeTransform extends Transform {
      * @param ctClass
      * @return
      */
-    private boolean isIAppLike(CtClass ctClass) {
+    private static boolean isIAppLike(CtClass ctClass) {
         try {
             for (CtClass ctClassInter : ctClass.getInterfaces()) {
                 if (Config.IAPPLIKE_FULL_NAME.equals(ctClassInter.name)) {
@@ -211,19 +213,20 @@ class ComCodeTransform extends Transform {
      * @param IAppLikes
      * @param patch
      */
-    private void injectApplicationCode(CtClass ctClassApplication, List<CtClass> IAppLikes, String patch) {
+    private static void injectApplicationCode(CtClass ctClassApplication, List<CtClass> IAppLikes, String patch) {
         println("injectApplicationCode start")
 
+        //CtClass对象被writeFile(),toClass()或者toBytecode()转换成了类对象，Javassist将会冻结此CtClass对象，所以要先解冻；
         ctClassApplication.defrost()
         try {
             CtMethod onCreateMethod = ctClassApplication.getDeclaredMethod("onCreate", null)
             onCreateMethod.insertAfter(getAutoLoadComCode(IAppLikes))
         } catch (CannotCompileException | NotFoundException e) {
-            //不存在目标onCreate()方法
+            //不存在目标onCreate()方法，添加onCreate()方法
             StringBuilder methodBody = new StringBuilder()
             methodBody.append("protected void onCreate() {")
             methodBody.append("super.onCreate();")
-            methodBody.append(getAutoLoadComCode(activators))
+            methodBody.append(getAutoLoadComCode(IAppLikes))
             methodBody.append("}")
             ctClassApplication.addMethod(CtMethod.make(methodBody.toString(), ctClassApplication))
         } catch (Exception e) {
@@ -231,13 +234,14 @@ class ComCodeTransform extends Transform {
         }
 
         ctClassApplication.writeFile(patch)
+        //避免内存溢出
         ctClassApplication.detach()
 
         println("injectApplicationCode success")
 
     }
 
-    private String getAutoLoadComCode(List<CtClass> IAppLikes) {
+    private static String getAutoLoadComCode(List<CtClass> IAppLikes) {
         StringBuilder autoLoadComCode = new StringBuilder()
         for (CtClass ctClass : IAppLikes) {
             //调用IAppLike实现类的onCreate()方法

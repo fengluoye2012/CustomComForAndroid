@@ -212,12 +212,23 @@ Groory语法：https://www.jianshu.com/p/fe3aede00fd3
     - ASM 判定一个类，实现了指定接口： https://blog.csdn.net/weixin_33966365/article/details/91697173
 
 
-# javassist 和ASM 的作用一样
+# javassist：是用来处理java字节码的类库， java字节码一般存放在后缀名称为class的二进制文件中。每个二进制文件都包含一个java类或者是java接口。
+             bytecode读取、新建类、冻结类、
 
-# javapoet
+    - Javassist中文技术文档：https://www.cnblogs.com/scy251147/p/11100961.html
+
+     - 知识点
+       CtClass 是对类文件的抽象，处于编译中的此对象可以用来处理类文件。
+       ClassPool是由装载了很多CtClass对象的HashTable组成。其中，类名为key，CtClass对象为Value，这样就可以通过搜索HashTable的Key来找到相关的CtClass对象了。
+           如果对象没有被找到，那么get()方法就会创建出一个默认的CtClass对象，然后放入到HashTable中，同时将当前创建的对象返回。
+
+
+# javapoet：用来自动生成Java类，主要包含创建方法、成员变量、类/接口等主要方法。主要用在自定义注解处理器时，生成相关Java类。
+
   - Android编译时代码生成之二（javapoet）：https://www.jianshu.com/p/c1fa17537739
   - javapoet：https://github.com/square/javapoet
-  - Javassist中文技术文档：https://www.cnblogs.com/scy251147/p/11100961.html
+
+
 
 # app 编译流程
 
