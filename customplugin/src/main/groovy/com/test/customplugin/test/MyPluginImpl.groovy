@@ -21,7 +21,6 @@ public class MyPluginImpl implements Plugin<Project> {
              age 20
           }
         */
-        project.extensions.add("extensionsTest", Person)
 
 
         //AppExtension就是build.gradle中android{...}这一块

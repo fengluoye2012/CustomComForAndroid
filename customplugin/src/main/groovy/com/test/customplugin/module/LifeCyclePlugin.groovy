@@ -27,9 +27,6 @@ class LifeCyclePlugin implements Plugin<Project> {
      */
     private void gradleConfigDeal(Project project) {
 
-        Set<Task> tasks = project.getTasksByName()
-
-
         //用来自定义Extensions,只需要在build.gradle中加入
         //comBuild{
         //   对应的属性
