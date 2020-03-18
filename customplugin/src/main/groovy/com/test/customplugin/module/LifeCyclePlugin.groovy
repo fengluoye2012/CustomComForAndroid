@@ -5,6 +5,7 @@ import com.test.customplugin.module.exten.ComExtension
 import com.test.customplugin.module.javassist.ComCodeTransform
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 
 class LifeCyclePlugin implements Plugin<Project> {
 
@@ -25,6 +26,9 @@ class LifeCyclePlugin implements Plugin<Project> {
      * @param project
      */
     private void gradleConfigDeal(Project project) {
+
+        Set<Task> tasks = project.getTasksByName()
+
 
         //用来自定义Extensions,只需要在build.gradle中加入
         //comBuild{
@@ -118,6 +122,7 @@ class LifeCyclePlugin implements Plugin<Project> {
                 break
             }
         }
+
         return assembleTask
     }
 
@@ -180,6 +185,8 @@ class LifeCyclePlugin implements Plugin<Project> {
             println("there is no add dependencies")
             return
         }
+
+
 
         for (String str : compileComponents) {
             println("需要添加的依赖：comp is ${str}")

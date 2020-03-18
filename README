@@ -111,6 +111,8 @@ Gradle:主要概念：Task、Project、Extension、Plugin、Transform
       https://cloud.tencent.com/developer/article/1407423
     - 自定义Extension：https://blog.csdn.net/verymrq/article/details/80426594?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
 
+    通过Gradle插件统一规范:https://www.jianshu.com/p/4c31aa89fcd6
+
 
 相关资料
 1）Gradle--语言基础Groovy;
@@ -242,8 +244,8 @@ Groory语法：https://www.jianshu.com/p/fe3aede00fd3
 
 
 # Android 高阶
- - Android高级面试题： https://www.jianshu.com/p/29499ba2d9aa
- -Android中高级进阶知识点整理：https://blog.csdn.net/lou_liang/article/details/8285653
+ https://www.jianshu.com/p/29499ba2d9aa
+ https://blog.csdn.net/lou_liang/article/details/8285653
 
 
 # 技能点
